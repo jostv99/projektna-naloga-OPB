@@ -24,19 +24,19 @@ class Repo:
         oglasi = [oglas.from_dict(t) for t in self.cur.fetchall()]
         return oglasi
 
-    def dobi_uporabnika(self,id):
+    def dobi_uporabnika(self,username):
         self.cur.execute("""
-            SELECt * FROM uporabniki WHERE id=%s
-            """,(id,))
+            SELECT * FROM uporabniki WHERE uporabnisko_ime=%s
+            """,(username,))
         u = uporabnik.from_dict(self.cur.fetchone())
         return u
         
-    def dodaj_uporabnika(self, ime, priimek, email, uporabnisko_ime, telefon, geslo, kraj_bivanja):
+    def dodaj_uporabnika(self, u):
         self.cur.execute("""
+            SELECT setval('uporabniki_id_seq', max(id)) FROM uporabniki;
             INSERT INTO uporabniki
-            (id, ime, priimek, email, kredibilnost, uporabnisko_ime, telefon, geslo, kraj_bivanja, sporocila)
-            VALUES (%s, %s, %s, %s, 0, %s, %s, %s, %s, NULL)
-            """,(ime, priimek, email, uporabnisko_ime, telefon, geslo, kraj_bivanja,))
-        uporabniki = [uporabnik.from_dict(t) for t in self.cur.fetchall()]
-        return uporabniki
+            (ime, priimek, email, kredibilnost, uporabnisko_ime, telefon, geslo, kraj_bivanja, sporocila)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,(u.ime, u.priimek, u.email, u.kredibilnost, u.uporabnisko_ime, u.telefon, u.geslo, u.kraj_bivanja, u.sporocila,))
+        self.conn.commit()
     

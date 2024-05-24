@@ -15,19 +15,31 @@ class AuthService:
         except:
             return False
         
-    def prijavi_uporabnika(self, uporabnik, geslo):
-        user = self.repo.dobi_uporabnika(uporabnik)
+    def prijavi_uporabnika(self, u, geslo):
+        user = self.repo.dobi_uporabnika(u)
         geslo_bytes = geslo.encode('utf-8')
-        succ = bcrypt.checkpw(geslo_bytes, user.password_hash.encode('utf-8'))
+        succ = bcrypt.checkpw(geslo_bytes, user.geslo.encode('utf-8'))
         if succ:
-            self.repo.posodobi_uporabnika(user)
-            return uporabnik(username=user.username)
+            return user
         return False
 
-    def dodaj_uporabnika(self, uporabnik, geslo):
+    def dodaj_uporabnika(self, ime, priimek, email, uporabnisko_ime, telefon, geslo, kraj_bivanja):
         bytes = geslo.encode('utf-8')
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(bytes, salt)
 
+        u = uporabnik(
+                ime = ime,
+                priimek = priimek,
+                email = email,
+                kredibilnost = 0,
+                uporabnisko_ime = uporabnisko_ime,
+                telefon = telefon,
+                geslo = password_hash.decode(),
+                kraj_bivanja = kraj_bivanja,
+                sporocila = ''
 
-        return uporabnik()
+        )
+
+        self.repo.dodaj_uporabnika(u)
+        return u
