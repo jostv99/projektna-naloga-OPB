@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- (id, prodajalec, kategorija, opis, naslov, cena, slika) -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{naslov}}</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+<body>
+    <!-- <header>
+        <h1>Second Hand Store</h1>
+        <nav>
+            <button onclick="window.location.href='index.html'">Home</button>
+            <button onclick="window.location.href='login.html'">Login</button>
+            <button onclick="window.location.href='register.html'">Register</button>
+        </nav>
+    </header> -->
+    <main>
+        <div class="ad-container">
+            <h2>{{naslov}}</h2>
+            <img src=slika alt="Oglasu ni bila dodana nobena slika." class="ad-image">
+            <div class="ad-details">
+                <p class="ad-description">{{opis}}</p>
+                <p class="ad-price">Cena: {{cena}}€</p>
+                <p class="nekadj">ID={{id}}</p>
+
+            </div>
+            <div>
+                <forms action="../ad/{{id}}" method="POST">
+                    <p>Sporočilo: <input type="text" name="sporocilo" value="{{sporocilo}}"></p>
+                    <p><input type="hidden" id="prejemnik" name="prejemnik" value="{{prodajalec}}"></p>
+                    <p><input type="submit" value="Pošlji"></p>
+                </forms>
+            </div>
+            <div>
+                <a href="../user/{{prodajalec}}"><button>Profil prodajalca</button></a>                
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Second Hand Store</p>
+    </footer>
+</body>
+</html>
