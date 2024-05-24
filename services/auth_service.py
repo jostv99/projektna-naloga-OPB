@@ -23,19 +23,17 @@ class AuthService:
             return user
         return False
 
-    def dodaj_uporabnika(self, ime, priimek, email, uporabnisko_ime, telefon, geslo, kraj_bivanja):
+    def dodaj_uporabnika(self, uporabnisko_ime, geslo, email, telefon, kraj_bivanja):
         bytes = geslo.encode('utf-8')
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(bytes, salt)
 
         u = uporabnik(
-                ime = ime,
-                priimek = priimek,
+                uporabnisko_ime = uporabnisko_ime,
+                geslo = password_hash.decode(),                
                 email = email,
                 kredibilnost = 0,
-                uporabnisko_ime = uporabnisko_ime,
                 telefon = telefon,
-                geslo = password_hash.decode(),
                 kraj_bivanja = kraj_bivanja,
                 sporocila = ''
 

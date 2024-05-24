@@ -10,16 +10,13 @@ import csv
 def ustvari_tabelo_uporabniki():
     cur.execute("""
         CREATE TABLE uporabniki (
-            id SERIAL PRIMARY KEY,
-            ime TEXT NOT NULL,
-            priimek TEXT NOT NULL,
+            uporabnisko_ime TEXT PRIMARY KEY,
+            geslo TEXT NOT NULL,                           
             email TEXT NOT NULL,                
             kredibilnost FLOAT(24) NOT NULL,
-            uporabnisko_ime TEXT NOT NULL,
             telefon TEXT,
-            geslo TEXT NOT NULL,
             kraj_bivanja TEXT,
-            sporocila TEXT
+            sporocila TEXT[]
         );
     """)
     conn.commit()
@@ -73,13 +70,18 @@ def uvozi_podatke(podatki):
             print("Kategorije uspešno naložene!")
 
         elif podatki == 'uporabniki':
+            cur.execute("""
+                    INSERT INTO uporabniki
+                    VALUES ('admin','admin','admin','admin','admin','admin','admin')
+                """
+            )
             for r in rd:
                 r = [None if x in ('', '-') else x for x in r]
                 cur.execute("""
                     INSERT INTO uporabniki
-                    (id, ime, priimek, email, kredibilnost, uporabnisko_ime, telefon, geslo, kraj_bivanja, sporocila)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    RETURNING id
+                    (uporabnisko_ime, geslo, email, kredibilnost, telefon, kraj_bivanja, sporocila)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    RETURNING uporabnisko_ime
                 """, r)
             print("Podatki uporabnikov uspešno naloženi!")
             

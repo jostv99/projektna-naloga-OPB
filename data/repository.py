@@ -33,10 +33,9 @@ class Repo:
         
     def dodaj_uporabnika(self, u):
         self.cur.execute("""
-            SELECT setval('uporabniki_id_seq', max(id)) FROM uporabniki;
             INSERT INTO uporabniki
-            (ime, priimek, email, kredibilnost, uporabnisko_ime, telefon, geslo, kraj_bivanja, sporocila)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """,(u.ime, u.priimek, u.email, u.kredibilnost, u.uporabnisko_ime, u.telefon, u.geslo, u.kraj_bivanja, u.sporocila,))
+            (uporabnisko_ime, geslo, email, kredibilnost, telefon, kraj_bivanja, sporocila)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,(u.uporabnisko_ime, u.geslo, u.email, u.kredibilnost, u.telefon, u.kraj_bivanja, u.sporocila,))
         self.conn.commit()
     

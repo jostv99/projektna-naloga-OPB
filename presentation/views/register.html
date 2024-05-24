@@ -1,29 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <h1>Register</h1>
-    </header>
-    <main>
-        <form action="/register" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
-            <button type="submit">Register</button>
-        </form>
-    </main>
-    <footer>
-        <p>&copy; 2024 Second Hand Store</p>
-    </footer>
-</body>
-</html>
+%rebase('osnovna.html', naslov='register', stran='register')
+
+<form action="{{url('/register')}}" method="POST" style="width:60%">
+    <div class="form-group">
+      <label for="username">Uporabniško ime</label>
+      <input type="input" class="form-control" name="username"  placeholder="Vnesi uporabniško ime">
+    </div>
+    <div class="form-group">
+      <label for="password">Geslo</label>
+      <input type="password" class="form-control" name="password" placeholder="Geslo">
+    </div>
+    <div class="form-group">
+        <label for="username">Uporabniško ime</label>
+        <input type="input" class="form-control" name="username"  placeholder="Vnesi uporabniško ime">
+    </div>
+    <div class="form-group">
+        <label for="username">Uporabniško ime</label>
+        <input type="input" class="form-control" name="username"  placeholder="Vnesi uporabniško ime">
+    </div>      
+      
+
+
+
+    <button type="submit" class="btn btn-primary">Prijava</button>
+  </form>
+
+  %if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+    %end
+  <p>Že imaš račun? prijavi se <a href="{{url('/register')}}">tukaj</a> </p>

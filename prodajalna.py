@@ -7,7 +7,9 @@ from services.oglas_service import OglasService
 
 import auth as auth
 
-#popravi bazo, da je up_ime enolicno
+#popravi bazo, da je up_ime enolicno, odstrani ime priimek
+#popravi er diagram
+
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
@@ -55,8 +57,24 @@ def login():
     else:
         return template("login.html", uporabnik=None, napaka="Neuspešna prijava. Napačno geslo ali uporabniško ime.")
 
+
+@get('/logout')
+def logout():
+    """
+    Odjavi uporabnika iz aplikacije. Pobriše piškotke o uporabniku in njegovi roli.
+    """
+    
+    response.delete_cookie("uporabnik")
+    response.delete_cookie("rola")
+    
+    return template('login.html', uporabnik=None,napaka=None)
 conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password, port=DB_PORT)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+@post('/register')
+def register():
+    username = request.forms.get('username')
+    password = request.forms.get('password')    
 
 #authS.dodaj_uporabnika('admin','admin','admin','admin','admin','admin','admin')
 if __name__ == "__main__":
