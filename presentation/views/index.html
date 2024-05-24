@@ -1,0 +1,25 @@
+%rebase('osnovna.html', naslov='index', stran='index')
+
+<div >
+    <h2>Nazadnje dodani oglasi:</h2>
+        <br>  
+      <div style="display: flex;">
+  
+      <div style="flex:1;">
+        <table class="table">
+            %for oglas in oglasi:
+          <tr>
+             <td>{{oglas.naslov}}</td>
+          </tr>
+        %end
+        </table>
+  
+  
+  
+      </div>    
+  
+      </div>
+     
+  </div>
+  
+  

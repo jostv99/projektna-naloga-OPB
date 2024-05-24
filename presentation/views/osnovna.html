@@ -1,33 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spletna prodajalna Uš</title>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <h1>Spletna prodajalna Uš</h1>
-        <nav>
-            <button onclick="window.location.href='login.html'">Login</button>
-            <button onclick="window.location.href='register.html'">Register</button>
-        </nav>
-    </header>
-    <main>
-        <h2>Nekaj oglasov</h2>
-        %for (id, prodajalec, kategorija, opis, naslov, cena, slika) in oglasi:
-        <ul>
-            <li><a href="./ad/{{id}}">{{naslov}}</a>, {{cena}}</li>
-        </ul>
-        %end
-    </main>
-    <footer>
-        <p>&copy; 2024 Second Hand Store</p>
-    </footer>
-</body>
-</html> -->
 <html>
 <head>
     <meta charset="UTF-8">
@@ -40,17 +10,17 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="navbar-nav">     
           
-          %if stran=='transakcije':
-          <a class="nav-link active" href="{{url('/')}}">Transakcije</a>
+          %if stran=='index':
+          <a class="nav-link active" href="{{url('/')}}">Domača stran</a>
           %else:
-          <a class="nav-link" href="{{url('/')}}">Transakcije</a>
+          <a class="nav-link" href="{{url('/')}}">Domača stran</a>
           %end
 
-          %if stran=='osebe':
-        <a class="nav-link active" href="{{url('/osebe')}}">Osebe</a>
-        %else:
-        <a class="nav-link" href="{{url('/osebe')}}">Osebe</a>
-        %end  
+          %if stran=='oglas':
+          <a class="nav-link active" href="{{url('/')}}">Osebe</a>
+          %else:
+          <a class="nav-link" href="{{url('/')}}">Osebe</a>
+          %end  
 
         
         </div>
@@ -58,16 +28,10 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
 
           <ul class="navbar-nav ml-auto">
-            % if rola and uporabnik:
+            % if True:
             <span class="navbar-text">
-              {{uporabnik}} ({{rola}}) 
-            </span>
-            %end      
-                        
-  
-            <li class="nav-link">
-                <a class="dropdown-item" href="{{url('odjava')}}">Odjava</a>
-            </li>
+              Uporabnik
+            </span>   
             % end
           </ul>
         </div>

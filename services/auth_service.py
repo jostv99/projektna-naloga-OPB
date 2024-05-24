@@ -29,10 +29,5 @@ class AuthService:
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(bytes, salt)
 
-        u = uporabnik(
-            ime=ime
-        )
-
-        self.repo.dodaj_uporabnika(u)
 
         return uporabnik()

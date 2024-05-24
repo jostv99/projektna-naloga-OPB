@@ -2,7 +2,7 @@ import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 import auth as auth
 
-from models import uporabnik, kategorija, oglas
+from .models import uporabnik, kategorija, oglas
 from typing import List
 
 class Repo:
@@ -14,11 +14,22 @@ class Repo:
         self.cur.execute("""
             SELECT * FROM oglasi WHERE id=%s
             """,(id,))
-        
+        o = oglas.from_dict(self.cur.fetchone())
+        return o
+    
+    def dobi_nakljucne_oglase(self, num):
+        self.cur.execute("""SELECT * FROM oglasi 
+                         ORDER BY RANDOM() LIMIT %s
+                         """, (num,))
+        oglasi = [oglas.from_dict(t) for t in self.cur.fetchall()]
+        return oglasi
+
     def dobi_uporabnika(self,id):
         self.cur.execute("""
             SELECt * FROM uporabniki WHERE id=%s
             """,(id,))
+        u = uporabnik.from_dict(self.cur.fetchone())
+        return u
         
     def dodaj_uporabnika(self, ime, priimek, email, uporabnisko_ime, telefon, geslo, kraj_bivanja):
         self.cur.execute("""
@@ -26,3 +37,6 @@ class Repo:
             (id, ime, priimek, email, kredibilnost, uporabnisko_ime, telefon, geslo, kraj_bivanja, sporocila)
             VALUES (%s, %s, %s, %s, 0, %s, %s, %s, %s, NULL)
             """,(ime, priimek, email, uporabnisko_ime, telefon, geslo, kraj_bivanja,))
+        uporabniki = [uporabnik.from_dict(t) for t in self.cur.fetchall()]
+        return uporabniki
+    
