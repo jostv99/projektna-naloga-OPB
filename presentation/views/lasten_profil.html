@@ -1,0 +1,20 @@
+%rebase('osnovna.html', naslov='profil', stran='profil')
+%if uporabnik==None:
+    <p>Uporabnika s tem imenom žal ni. Nazaj na <a href="{{url('/')}}" >domačo stran.</a></p>
+%else:
+    <h2>{{uporabnik.uporabnisko_ime}}</h2>
+    <h3>Oglasi uporabnika:</h3>
+    %if oglasi == []:
+        <p>Ta uporabnik še nima objavljenega nobenega oglasa.</p>
+    %else:
+    <ul>
+        %for ad in oglasi:
+            %new_url = url('oglas', x=ad.id)
+            <li><a href="{{new_url}}">{{ad.naslov}}</a></li>
+    </ul>        
+    %end
+
+%end
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end

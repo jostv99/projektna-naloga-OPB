@@ -117,10 +117,10 @@ def user(username):
     if not authS.obstaja_uporabnik(username):
         return template("profil.html",uporabnik=None,oglasi=None,napaka=None)
     uporabnik = authS.dobi_uporabnika(username)
-    trenutni_uporabnik = request.get_cookie("username")
-    if uporabnik == trenutni_uporabnik:
-        return template("profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Uredi svoj profil")
+    trenutni_uporabnik = request.get_cookie("uporabnik")
     oglasi = authS.dobi_oglase_uporabnika(uporabnik)
+    if uporabnik.uporabnisko_ime == trenutni_uporabnik:
+        return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Uredi svoj profil")    
     return template("profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka=None)
 
 
