@@ -35,7 +35,7 @@ class AuthService:
                 kredibilnost = 0,
                 telefon = telefon,
                 kraj_bivanja = kraj_bivanja,
-                sporocila = ''
+                sporocila = '{}'
 
         )
 

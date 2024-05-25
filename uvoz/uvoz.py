@@ -36,7 +36,7 @@ def ustvari_tabelo_oglasi():
     cur.execute("""
         CREATE TABLE oglasi (
             id SERIAL PRIMARY KEY,
-            prodajalec INTEGER REFERENCES uporabniki(id),
+            prodajalec TEXT REFERENCES uporabniki(uporabnisko_ime),
             kategorija INTEGER REFERENCES kategorije(id),
             opis TEXT,
             naslov TEXT NOT NULL,
@@ -70,11 +70,6 @@ def uvozi_podatke(podatki):
             print("Kategorije uspešno naložene!")
 
         elif podatki == 'uporabniki':
-            cur.execute("""
-                    INSERT INTO uporabniki
-                    VALUES ('admin','admin','admin','admin','admin','admin','admin')
-                """
-            )
             for r in rd:
                 r = [None if x in ('', '-') else x for x in r]
                 cur.execute("""

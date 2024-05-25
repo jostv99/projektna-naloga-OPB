@@ -25,7 +25,7 @@ def cookie_required(f):
         cookie = request.get_cookie("uporabnik")
         if cookie:
             return f(*args, **kwargs)
-        return template("login.html",uporabnik=None, rola=None, napaka="Potrebna je prijava!")
+        return template("login.html",uporabnik=None,napaka="Potrebna je prijava!")
         
     return decorated
 
@@ -41,13 +41,17 @@ def index():
     oglasi = oglasiS.dobi_nakljucne_oglase(10)
     return template('index.html', oglasi=oglasi)
 
-@post('/login')
+@get('/login')
 def login():
+    return template("login.html",uporabnik=None,napaka=None)
+
+@post('/login')
+def login_post():
     username = request.forms.get('username')
     password = request.forms.get('password')
 
     if not authS.obstaja_uporabnik(username):
-        return template("login.html", napaka="Uporabnik s tem imenom ne obstaja")
+        return template("login.html",uporabnik=None,napaka="Uporabnik s tem imenom ne obstaja")
 
     prijava = authS.prijavi_uporabnika(username, password)
     if prijava:
@@ -55,27 +59,47 @@ def login():
         redirect(url('/'))
         
     else:
-        return template("login.html", uporabnik=None, napaka="Neuspešna prijava. Napačno geslo ali uporabniško ime.")
+        return template("login.html",uporabnik=None,napaka="Neuspešna prijava. Napačno geslo ali uporabniško ime.")
 
 
 @get('/logout')
 def logout():
-    """
-    Odjavi uporabnika iz aplikacije. Pobriše piškotke o uporabniku in njegovi roli.
-    """
-    
     response.delete_cookie("uporabnik")
     response.delete_cookie("rola")
     
     return template('login.html', uporabnik=None,napaka=None)
+
+
+@get('/register')
+def register():
+    return template("register.html", napaka=None)
+
+@post('/register')
+def register_post():
+    username = request.forms.get('username')
+    password = request.forms.get('password')  
+    email = request.forms.get('email')
+    
+    if password ==  '' or username == '' or email == '':
+        return template("register.html", napaka="Prosimo vnesite podatke v vsa polja!")
+    
+    if authS.obstaja_uporabnik(username):
+        return template("register.html", napaka="To uporabniško ime je že zasedeno, prosim izberite drugo.")
+
+    #se pregledas ksne pogoje...
+
+    uporabnik = authS.dodaj_uporabnika(username,password,email,'','')
+
+    return template("login.html", uporabnik=uporabnik, napaka=None)
+    
+
+
+
+
+
 conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password, port=DB_PORT)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-@post('/register')
-def register():
-    username = request.forms.get('username')
-    password = request.forms.get('password')    
-
-#authS.dodaj_uporabnika('admin','admin','admin','admin','admin','admin','admin')
+#authS.dodaj_uporabnika('admin','admin','admin','admin','admin')
 if __name__ == "__main__":
     run(host='localhost', port=SERVER_PORT, reloader=RELOADER)
