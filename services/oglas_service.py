@@ -4,9 +4,18 @@ from typing import List
 import bcrypt
 
 class OglasService:
+    repo : Repo
+
     def __init__(self) -> None:
         self.repo = Repo()
 
+
+    def obstaja_oglas(self, id):
+        try:
+            o = self.repo.dobi_oglas(id)
+            return True
+        except:
+            return False
 
     def dobi_oglas(self, id):
         return self.repo.dobi_oglas(id)

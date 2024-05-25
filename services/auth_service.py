@@ -15,6 +15,9 @@ class AuthService:
         except:
             return False
         
+    def dobi_uporabnika(self, u):
+        return self.repo.dobi_uporabnika(u)
+        
     def prijavi_uporabnika(self, u, geslo):
         user = self.repo.dobi_uporabnika(u)
         geslo_bytes = geslo.encode('utf-8')
@@ -41,3 +44,9 @@ class AuthService:
 
         self.repo.dodaj_uporabnika(u)
         return u
+    
+    def poslji_sporocilo(self, u, sporocilo):
+        self.repo.poslji_sporocilo(u,sporocilo)
+
+    def dobi_oglase_uporabnika(self, u):
+        return self.repo.dobi_oglase_uporabnika(u)

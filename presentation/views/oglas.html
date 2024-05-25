@@ -1,49 +1,27 @@
-<!DOCTYPE html>
-<!-- (id, prodajalec, kategorija, opis, naslov, cena, slika) -->
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{naslov}}</title>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
+%rebase('osnovna.html', naslov='oglas', stran='oglas')
+%if oglas==None:
+    <p>Ta oglas žal več ne obstaja. Nazaj na <a href="{{url('/')}}" >domačo stran.</a></p>
+%else:
+    <h2>{{oglas.naslov}}</h2>
+    <div>
+        <p>{{oglas.opis}}</p>
+        %if oglas.slika is not None:
+            <img src="{{oglas.slika}}" alt="Prodajalec ni priložil nobene slike.">
+        %end
+    </div>
+    <div>
+    <form action="" method="POST" style="width:60%">
+        <div class="form-group">
+            <label for="sporocilo">Se zanimate za nakup? Prodajalcu pošljite sporočilo tu:</label>
+            <input type="text" class="form-control" name="sporocilo" placeholder="Vaše sporočilo">
+        </div>
+         
+        <button type="submit" class="btn btn-primary">Pošlji</button>
+    </form>
+    %user_url = url('user', username=oglas.prodajalec)
+    <p>Te zanima še kakšen oglas uporabnika {{oglas.prodajalec}}? <a href="{{user_url}}">Tu</a> si lahko ogledaš še preostale.</p>
+    </div>
+%end
 %if napaka:
   <p class="opozorilo">{{napaka}}</p>
 %end
-<body>
-    <!-- <header>
-        <h1>Second Hand Store</h1>
-        <nav>
-            <button onclick="window.location.href='index.html'">Home</button>
-            <button onclick="window.location.href='login.html'">Login</button>
-            <button onclick="window.location.href='register.html'">Register</button>
-        </nav>
-    </header> -->
-    <main>
-        <div class="ad-container">
-            <h2>{{naslov}}</h2>
-            <img src=slika alt="Oglasu ni bila dodana nobena slika." class="ad-image">
-            <div class="ad-details">
-                <p class="ad-description">{{opis}}</p>
-                <p class="ad-price">Cena: {{cena}}€</p>
-                <p class="nekadj">ID={{id}}</p>
-
-            </div>
-            <div>
-                <forms action="../ad/{{id}}" method="POST">
-                    <p>Sporočilo: <input type="text" name="sporocilo" value="{{sporocilo}}"></p>
-                    <p><input type="hidden" id="prejemnik" name="prejemnik" value="{{prodajalec}}"></p>
-                    <p><input type="submit" value="Pošlji"></p>
-                </forms>
-            </div>
-            <div>
-                <a href="../user/{{prodajalec}}"><button>Profil prodajalca</button></a>                
-            </div>
-        </div>
-    </main>
-    <footer>
-        <p>&copy; 2024 Second Hand Store</p>
-    </footer>
-</body>
-</html>

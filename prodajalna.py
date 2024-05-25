@@ -7,16 +7,17 @@ from services.oglas_service import OglasService
 
 import auth as auth
 
-#popravi bazo, da je up_ime enolicno, odstrani ime priimek
-#popravi er diagram
-
+#popravi bazo da so def sporocila {} in ne NULL 
+#dodaj viewed za najbolj ogledane oglase?
+#dodaj da je ogled svojega profila drugacen--urejanje, dodajanje info, oglasov, branje sporocil...
+#css, urejanje html, lepsi izgled...
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
 DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 authS = AuthService()
-oglasiS = OglasService()
+oglasS = OglasService()
 
 
 def cookie_required(f):
@@ -38,7 +39,7 @@ def static(filename):
 @get('/')
 @cookie_required
 def index():
-    oglasi = oglasiS.dobi_nakljucne_oglase(10)
+    oglasi = oglasS.dobi_nakljucne_oglase(10)
     return template('index.html', oglasi=oglasi)
 
 @get('/login')
@@ -65,7 +66,6 @@ def login_post():
 @get('/logout')
 def logout():
     response.delete_cookie("uporabnik")
-    response.delete_cookie("rola")
     
     return template('login.html', uporabnik=None,napaka=None)
 
@@ -89,10 +89,39 @@ def register_post():
     #se pregledas ksne pogoje...
 
     uporabnik = authS.dodaj_uporabnika(username,password,email,'','')
-
+    #popravi da samo vpise geslo, ki ni hash,
     return template("login.html", uporabnik=uporabnik, napaka=None)
-    
 
+@get('/ad/<x:int>')
+def oglas(x):
+    if oglasS.obstaja_oglas(x):
+        oglas = oglasS.dobi_oglas(x)
+        return template("oglas.html", oglas=oglas,napaka=None)
+    else:
+        return template("oglas.html",oglas=None,napaka=None)
+
+@post('/ad/<x:int>')
+def oglas_post(x):
+    oglas = oglasS.dobi_oglas(x)
+    sporocilo = request.forms.get('sporocilo')
+    sporocilo = '{'+sporocilo+'}'
+    if sporocilo == None: #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string?
+        return template("oglas.html",oglas=oglas,napaka="Sporočilo mora imeti vsebino.")
+    prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
+    authS.poslji_sporocilo(prodajalec,sporocilo)
+
+    return template("oglas.html",oglas=oglas,napaka="Sporočilo uspešno poslano!")
+
+@get('/user/<username>')
+def user(username):
+    if not authS.obstaja_uporabnik(username):
+        return template("profil.html",uporabnik=None,oglasi=None,napaka=None)
+    uporabnik = authS.dobi_uporabnika(username)
+    trenutni_uporabnik = request.get_cookie("username")
+    if uporabnik == trenutni_uporabnik:
+        return template("profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Uredi svoj profil")
+    oglasi = authS.dobi_oglase_uporabnika(uporabnik)
+    return template("profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka=None)
 
 
 

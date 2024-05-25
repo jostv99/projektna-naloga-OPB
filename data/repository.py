@@ -38,4 +38,19 @@ class Repo:
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """,(u.uporabnisko_ime, u.geslo, u.email, u.kredibilnost, u.telefon, u.kraj_bivanja, u.sporocila,))
         self.conn.commit()
-    
+
+    def poslji_sporocilo(self, u, sp):
+        self.cur.execute("""
+            UPDATE uporabniki
+            SET sporocila=(sporocila || %s)
+            WHERE uporabnisko_ime=%s
+            """,(sp,u.uporabnisko_ime,))
+        self.conn.commit()
+
+    def dobi_oglase_uporabnika(self, u):
+        self.cur.execute("""
+            SELECT * FROM oglasi
+            WHERE prodajalec=%s
+            """,(u.uporabnisko_ime,))
+        oglasi = [oglas.from_dict(t) for t in self.cur.fetchall()]
+        return oglasi

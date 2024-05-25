@@ -1,24 +1,18 @@
 %rebase('osnovna.html', naslov='index', stran='index')
 
 <div >
-    <h2>Nazadnje dodani oglasi:</h2>
+    <h2>Nekaj oglasov:</h2>
         <br>  
       <div style="display: flex;">
-  
-      <div style="flex:1;">
-        <table class="table">
-            %for oglas in oglasi:
-          <tr>
-             <td>{{oglas.naslov}}</td>
-          </tr>
-        %end
-        </table>
-  
+          <ul>          
+            %for ad in oglasi:
+            %new_url = url('oglas', x=ad.id)
+            <li><a href="{{new_url}}">{{ad.naslov}}</a></li>
+          </ul>
+            %end
   
   
       </div>    
-  
-      </div>
      
   </div>
   
