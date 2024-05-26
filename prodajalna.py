@@ -11,6 +11,7 @@ import auth as auth
 #dodaj viewed za najbolj ogledane oglase?
 #dodaj da je ogled svojega profila drugacen--urejanje, dodajanje info, oglasov, branje sporocil...
 #css, urejanje html, lepsi izgled...
+#ob ogledu drugega profila te ne preusmeri na  svojega
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
@@ -23,7 +24,7 @@ oglasS = OglasService()
 def cookie_required(f):
     @wraps(f)
     def decorated( *args, **kwargs):
-        cookie = request.get_cookie("uporabnik")
+        cookie = request.get_cookie("uporabnik",secret=auth.skrivnost)
         if cookie:
             return f(*args, **kwargs)
         return template("login.html",uporabnik=None,napaka="Potrebna je prijava!")
@@ -40,8 +41,12 @@ def static(filename):
 @cookie_required
 def index():
     oglasi = oglasS.dobi_nakljucne_oglase(10)
-    return template('index.html', oglasi=oglasi)
-
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    if trenutni_uporabnik:
+        trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
+        return template('index.html', oglasi=oglasi,uporabnik=trenutni_uporabnik)
+    else:
+        return template('index.html', oglasi=oglasi,uporabnik=None)
 @get('/login')
 def login():
     return template("login.html",uporabnik=None,napaka=None)
@@ -56,7 +61,7 @@ def login_post():
 
     prijava = authS.prijavi_uporabnika(username, password)
     if prijava:
-        response.set_cookie("uporabnik", username)
+        response.set_cookie("uporabnik", username,secret=auth.skrivnost)
         redirect(url('/'))
         
     else:
@@ -81,10 +86,10 @@ def register_post():
     email = request.forms.get('email')
     
     if password ==  '' or username == '' or email == '':
-        return template("register.html", napaka="Prosimo vnesite podatke v vsa polja!")
+        return template("register.html", uporabnik=None,napaka="Prosimo vnesite podatke v vsa polja!")
     
     if authS.obstaja_uporabnik(username):
-        return template("register.html", napaka="To uporabniško ime je že zasedeno, prosim izberite drugo.")
+        return template("register.html", uporabnik=None, napaka="To uporabniško ime je že zasedeno, prosim izberite drugo.")
 
     #se pregledas ksne pogoje...
 
@@ -94,34 +99,44 @@ def register_post():
 
 @get('/ad/<x:int>')
 def oglas(x):
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    if trenutni_uporabnik:
+        trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik) 
     if oglasS.obstaja_oglas(x):
         oglas = oglasS.dobi_oglas(x)
-        return template("oglas.html", oglas=oglas,napaka=None)
+        return template("oglas.html", oglas=oglas,uporabnik=trenutni_uporabnik,napaka=None)
     else:
-        return template("oglas.html",oglas=None,napaka=None)
+        return template("oglas.html",oglas=None,uporabnik=trenutni_uporabnik,napaka=None)
 
 @post('/ad/<x:int>')
+@cookie_required
 def oglas_post(x):
     oglas = oglasS.dobi_oglas(x)
     sporocilo = request.forms.get('sporocilo')
     sporocilo = '{'+sporocilo+'}'
-    if sporocilo == None: #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string?
+    if sporocilo == None: #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string (v bazi)?
         return template("oglas.html",oglas=oglas,napaka="Sporočilo mora imeti vsebino.")
     prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
     authS.poslji_sporocilo(prodajalec,sporocilo)
-
-    return template("oglas.html",oglas=oglas,napaka="Sporočilo uspešno poslano!")
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
+    return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo uspešno poslano!")
 
 @get('/user/<username>')
 def user(username):
     if not authS.obstaja_uporabnik(username):
         return template("profil.html",uporabnik=None,oglasi=None,napaka=None)
     uporabnik = authS.dobi_uporabnika(username)
-    trenutni_uporabnik = request.get_cookie("uporabnik")
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
     oglasi = authS.dobi_oglase_uporabnika(uporabnik)
     if uporabnik.uporabnisko_ime == trenutni_uporabnik:
-        return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Uredi svoj profil")    
+        return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka=None)   
     return template("profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka=None)
+
+
+
+
+
 
 
 

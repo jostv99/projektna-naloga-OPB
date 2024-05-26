@@ -9,28 +9,16 @@
 <body> 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="navbar-nav">     
-          
-          %if stran=='index':
           <a class="nav-link active" href="{{url('/')}}">Domača stran</a>
-          %else:
-          <a class="nav-link" href="{{url('/')}}">Domača stran</a>
+          %if uporabnik is not None:
+          %user_url = url('user', username=uporabnik.uporabnisko_ime)
+          <a class="nav-link" href="{{user_url}}">Uredi svoj profil</a>
+          <a class="dropdown-item" href="{{url('/logout')}}">Odjava</a>          
           %end
-        
         </div>
 
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
 
-          <ul class="navbar-nav ml-auto">
-            % if True:
-            <span class="navbar-text">
-              Uporabnik
-            </span>
-            % end            
-        <li class="nav-link">
-          <a class="dropdown-item" href="{{url('/logout')}}">Odjava</a>
-        </li>
-
-          </ul>
         </div>
 
        
