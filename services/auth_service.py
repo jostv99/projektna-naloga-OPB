@@ -31,7 +31,7 @@ class AuthService:
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(bytes, salt)
 
-        u = uporabnik(
+        u = Uporabnik(
                 uporabnisko_ime = uporabnisko_ime,
                 geslo = password_hash.decode(),                
                 email = email,

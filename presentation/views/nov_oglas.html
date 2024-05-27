@@ -1,0 +1,43 @@
+%rebase('osnovna.html', naslov='nov_oglas', stran='nov_oglas')
+
+%c_link = '/user/<username>/new_ad'
+%user_ulr_ad = url(c_link, username=uporabnik.uporabnisko_ime)
+<form action="{{user_ulr_ad}}" method="POST" style="width:60%">
+    <div class="form-group">
+      <label for="naslov">Naslov oglasa:</label>
+      <input type="input" class="form-control" name="naslov"  placeholder="Katero stvar prodajate danes?">
+    </div>
+
+    <div class="form-group">
+      <label for="opis">Opis oglasa:</label>
+      <input type="input" class="form-control" name="opis" placeholder="Na kratko ali dolgo opišite kaj prodajate.">
+    </div>
+
+    <div class="form-group">
+      <label for="cena">Cena:</label>
+      <input type="input" class="form-control" name="cena">
+    </div>
+
+    <div class="form-group">
+        <label for="kategorija">Izberite kategorijo:</label>
+        <select name="kategorija" id="kategorija">
+            %for kategorija in kategorije:
+            <option value="{{kategorija.id}}">{{kategorija.opis}}</option>
+            %end
+        </select>
+    </div>
+
+    <div class="form-group"></div>
+        <p>Naloži sliko:</p>
+        <input type="image" id="myFile" name="slika">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Objavi oglas</button>
+</form>
+  
+%if napaka:
+<p class="opozorilo">{{napaka}}</p>
+%end
+
+
+

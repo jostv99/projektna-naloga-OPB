@@ -4,14 +4,13 @@ from presentation.bottleext import get, post, run, request, template, redirect, 
 import os, psycopg2, psycopg2.extensions, psycopg2.extras, hashlib
 from services.auth_service import AuthService
 from services.oglas_service import OglasService
-
+from services.kategorija_service import KategorijaService
 import auth as auth
 
 #popravi bazo da so def sporocila {} in ne NULL 
 #dodaj viewed za najbolj ogledane oglase?
 #dodaj da je ogled svojega profila drugacen--urejanje, dodajanje info, oglasov, branje sporocil...
 #css, urejanje html, lepsi izgled...
-#ob ogledu drugega profila te ne preusmeri na  svojega
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
@@ -19,7 +18,7 @@ DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 authS = AuthService()
 oglasS = OglasService()
-
+katS = KategorijaService() 
 
 def cookie_required(f):
     @wraps(f)
@@ -114,27 +113,47 @@ def oglas_post(x):
     oglas = oglasS.dobi_oglas(x)
     sporocilo = request.forms.get('sporocilo')
     sporocilo = '{'+sporocilo+'}'
-    if sporocilo == None: #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string (v bazi)?
-        return template("oglas.html",oglas=oglas,napaka="Sporočilo mora imeti vsebino.")
     prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
     authS.poslji_sporocilo(prodajalec,sporocilo)
     trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
-    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
+    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik    )
+    if sporocilo == '{}': #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string (v bazi)?
+        return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo mora imeti vsebino.")
     return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo uspešno poslano!")
 
 @get('/user/<username>')
+@cookie_required
 def user(username):
     if not authS.obstaja_uporabnik(username):
-        return template("profil.html",uporabnik=None,oglasi=None,napaka=None)
+        return template("profil.html",uporabnik=None,t_uporabnik=None,oglasi=None,napaka=None)
     uporabnik = authS.dobi_uporabnika(username)
     trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
     oglasi = authS.dobi_oglase_uporabnika(uporabnik)
     if uporabnik.uporabnisko_ime == trenutni_uporabnik:
-        return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka=None)   
-    return template("profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka=None)
+        return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka=None)  
+    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)  
+    return template("profil.html",uporabnik=trenutni_uporabnik,t_uporabnik=uporabnik,oglasi=oglasi,napaka=None)
 
+@get('/user/<username>/new_ad')
+@cookie_required
+def new_ad(username):
+    uporabnik = authS.dobi_uporabnika(username)
+    kategorije = katS.vrni_vse_kategorije()
+    return template("nov_oglas", uporabnik=uporabnik, kategorije=kategorije,napaka=None)
 
-
+@post('/user/<username>/new_ad')
+@cookie_required
+def new_ad_post(username): #dodaj kaksen error...
+    uporabnik = authS.dobi_uporabnika(username)
+    oglasi = authS.dobi_oglase_uporabnika(uporabnik)
+    naslov = request.forms.get('naslov')
+    opis = request.forms.get('opis')
+    cena = request.forms.get('cena')
+    kategorija = request.forms.get('kategorija')
+    slika = request.forms.get('slika')
+    oglas = oglasS.naredi_oglas(uporabnik,naslov,opis,cena,kategorija,slika)
+    oglasi = authS.dobi_oglase_uporabnika(uporabnik)
+    return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno narejen!")  
 
 
 

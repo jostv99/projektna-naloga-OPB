@@ -5,16 +5,18 @@
 <h2>Pozdravljen {{uporabnik.uporabnisko_ime}}!</h2>
     <div>
         <ul>
-            <li><a href="">Oglej si sporočila.</a></li>
+            %url_nov_oglas = url('new_ad_post', username=uporabnik.uporabnisko_ime)
+            <li><a href="{{url_nov_oglas}}">Dodaj nov oglas.</a></li>
             <li><a href="">Uredi svoj profil.</a></li>
-            <li><a href="">Dodaj nov oglas.</a></li>
+            <li><a href="">Oglej si sporočila</a></li>
         </ul>
     </div>
     
     <div>
-        %for oglas in oglasi:
+        %for ad in oglasi:
+        %new_url = url('oglas', x=ad.id)
         <ul>
-            <li><a href="">{{oglas.naslov}}</a></li>
+            <li><a href="{{new_url}}">{{ad.naslov}}</a></li>
         </ul>
         %end
     </div>

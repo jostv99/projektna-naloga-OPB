@@ -2,33 +2,53 @@ import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 import auth as auth
 
-from .models import uporabnik, kategorija, oglas
+from .models import Uporabnik, Kategorija, Oglas
 from typing import List
 
 class Repo:
     def __init__(self):
         self.conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password, port=5432)
         self.cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
+    ###################################################### OGLASI 
+    
     def dobi_oglas(self,id):
         self.cur.execute("""
             SELECT * FROM oglasi WHERE id=%s
             """,(id,))
-        o = oglas.from_dict(self.cur.fetchone())
+        o = Oglas.from_dict(self.cur.fetchone())
         return o
     
     def dobi_nakljucne_oglase(self, num):
         self.cur.execute("""SELECT * FROM oglasi 
                          ORDER BY RANDOM() LIMIT %s
                          """, (num,))
-        oglasi = [oglas.from_dict(t) for t in self.cur.fetchall()]
+        oglasi = [Oglas.from_dict(t) for t in self.cur.fetchall()]
         return oglasi
+    
+    def dobi_oglase_uporabnika(self, u):
+        self.cur.execute("""
+            SELECT * FROM oglasi
+            WHERE prodajalec=%s
+            """,(u.uporabnisko_ime,))
+        oglasi = [Oglas.from_dict(t) for t in self.cur.fetchall()]
+        return oglasi
+    
+    def naredi_oglas(self, o):
+        self.cur.execute("SELECT setval('oglasi_id_seq', max(id)) FROM oglasi")
+        self.cur.execute("""
+            INSERT INTO oglasi
+            (id, prodajalec, kategorija, opis, naslov, cena, slika)
+            VALUES (DEFAULT, %s, %s, %s, %s, %s, %s)
+            """,(o.prodajalec.uporabnisko_ime, o.kategorija, o.opis, o.naslov, o.cena, o.slika,))
+        self.conn.commit()  
+              
+    ###################################################### UPORABNIKI
 
     def dobi_uporabnika(self,username):
         self.cur.execute("""
             SELECT * FROM uporabniki WHERE uporabnisko_ime=%s
             """,(username,))
-        u = uporabnik.from_dict(self.cur.fetchone())
+        u = Uporabnik.from_dict(self.cur.fetchone())
         return u
         
     def dodaj_uporabnika(self, u):
@@ -47,10 +67,29 @@ class Repo:
             """,(sp,u.uporabnisko_ime,))
         self.conn.commit()
 
-    def dobi_oglase_uporabnika(self, u):
+
+    
+    ###################################################### KATEGORIJE
+    
+    def vrni_opis(self,id):
         self.cur.execute("""
-            SELECT * FROM oglasi
-            WHERE prodajalec=%s
-            """,(u.uporabnisko_ime,))
-        oglasi = [oglas.from_dict(t) for t in self.cur.fetchall()]
-        return oglasi
+           SELECT opis FROM kategorije WHERE id=%s
+           """,(id,))
+        opis = Kategorija.from_dict(self.cur.fetchone())
+        return opis[1]     
+    
+    def vrni_id(self,opis):
+        self.cur.execute("""
+           SELECT id FROM kategorije WHERE opis=%s
+           """,(opis,))
+        id = Kategorija.from_dict(self.cur.fetchone())
+        return id[0] 
+    
+    def vrni_vse_kategorije(self):
+        self.cur.execute("""
+           SELECT * FROM kategorije
+           ORDER BY opis
+           """)
+        kat = [Kategorija.from_dict(t) for t in self.cur.fetchall()]
+        return kat   
+        

@@ -1,10 +1,10 @@
 %rebase('osnovna.html', naslov='profil', stran='profil')
 
-%if uporabnik==None:
+%if t_uporabnik==None:
     <p>Uporabnika s tem imenom žal ni. Nazaj na <a href="{{url('/')}}" >domačo stran.</a></p>
 
 %else:
-    <h2>{{uporabnik.uporabnisko_ime}}</h2>
+    <h2>{{t_uporabnik.uporabnisko_ime}}</h2>
     <h3>Oglasi uporabnika:</h3>
     %if oglasi == []:
         <p>Ta uporabnik še nima objavljenega nobenega oglasa.</p>

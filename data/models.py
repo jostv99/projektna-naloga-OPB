@@ -5,7 +5,7 @@ from dataclasses_json import dataclass_json
 
 @dataclass_json
 @dataclass
-class uporabnik:
+class Uporabnik:
     id : int = field(default=0)
     ime : str = field(default='')
     priimek : str = field(default='')
@@ -20,14 +20,14 @@ class uporabnik:
 
 @dataclass_json
 @dataclass
-class kategorija:
+class Kategorija:
     id : int = field(default=0)
     opis : str = field(default='')
 
 
 @dataclass_json
 @dataclass
-class oglas:
+class Oglas:
     id : int = field(default=0)
     prodajalec : str = field(default='')
     kategorija : int = field(default=0)

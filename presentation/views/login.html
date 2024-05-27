@@ -24,9 +24,9 @@
  
   <button type="submit" class="btn btn-primary">Prijava</button>
   %end
-  </form>
+</form>
 
-  %if napaka:
-  <p class="opozorilo">{{napaka}}</p>
-    %end
-  <p>Še nimaš računa? prijavi se <a href="{{url('/register')}}">tukaj</a></p>
+%if napaka:
+<p class="opozorilo">{{napaka}}</p>
+  %end
+<p>Še nimaš računa? prijavi se <a href="{{url('/register')}}">tukaj</a></p>
