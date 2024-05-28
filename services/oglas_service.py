@@ -38,3 +38,5 @@ class OglasService:
         self.repo.naredi_oglas(o)
         return o
         
+    def izbrisi_oglas(self, id):
+        return self.repo.izbrisi_oglas(id)

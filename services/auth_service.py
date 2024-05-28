@@ -50,3 +50,6 @@ class AuthService:
 
     def dobi_oglase_uporabnika(self, u):
         return self.repo.dobi_oglase_uporabnika(u)
+    
+    def dobi_sporocila(self, u):
+        return self.repo.dobi_sporocila(u)

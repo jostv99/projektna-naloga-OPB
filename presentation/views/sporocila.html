@@ -1,0 +1,23 @@
+%rebase('osnovna.html', naslov='sporocila', stran='sporocila')
+
+<h2>Sporočila:</h2>
+<div>
+    <h3>Nova sporočila:</h3>   
+    %if nova == []:
+        <p>Ni novih sporočil.</p>
+    %else:
+        %for sporocilo in nova:
+        <p>{{sporocilo[1]}}</p>
+        %end
+</div>
+
+<div>
+    <h3>Vsa sporočila:</h3>
+    %for sporocilo in sporocila:
+    <p>{{sporocilo[1]}}</p>
+    %end
+</div>
+
+
+
+

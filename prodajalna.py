@@ -6,11 +6,14 @@ from services.auth_service import AuthService
 from services.oglas_service import OglasService
 from services.kategorija_service import KategorijaService
 import auth as auth
+import re, ast
 
-#popravi bazo da so def sporocila {} in ne NULL 
+#popravi bazo da so def sporocila {} in ne NULL, da sporocila shranijo od koda so prisla.....
 #dodaj viewed za najbolj ogledane oglase?
 #dodaj da je ogled svojega profila drugacen--urejanje, dodajanje info, oglasov, branje sporocil...
 #css, urejanje html, lepsi izgled...
+#spremeni bazo, da vzame vec slik, kot sporocila...array
+
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
@@ -19,6 +22,8 @@ DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 authS = AuthService()
 oglasS = OglasService()
 katS = KategorijaService() 
+
+dirname = os.path.dirname(__file__)
 
 def cookie_required(f):
     @wraps(f)
@@ -112,13 +117,15 @@ def oglas(x):
 def oglas_post(x):
     oglas = oglasS.dobi_oglas(x)
     sporocilo = request.forms.get('sporocilo')
-    sporocilo = '{'+sporocilo+'}'
-    prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
-    authS.poslji_sporocilo(prodajalec,sporocilo)
-    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
-    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik    )
-    if sporocilo == '{}': #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string (v bazi)?
+    if sporocilo == '': #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string (v bazi)?
         return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo mora imeti vsebino.")
+    prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    sporocilo = '{'+'['+trenutni_uporabnik+','+sporocilo+','+'False'+']'+'}'
+    authS.poslji_sporocilo(prodajalec,sporocilo)
+    print(sporocilo)
+    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
+
     return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo uspešno poslano!")
 
 @get('/user/<username>')
@@ -150,10 +157,67 @@ def new_ad_post(username): #dodaj kaksen error...
     opis = request.forms.get('opis')
     cena = request.forms.get('cena')
     kategorija = request.forms.get('kategorija')
-    slika = request.forms.get('slika')
-    oglas = oglasS.naredi_oglas(uporabnik,naslov,opis,cena,kategorija,slika)
+    slika = request.files['slika']
+    filename = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", slika.filename)
+    slika.save(os.path.join(dirname,'presentation','static','images'),filename)
+    oglas = oglasS.naredi_oglas(uporabnik,naslov,opis,cena,kategorija,filename)
     oglasi = authS.dobi_oglase_uporabnika(uporabnik)
     return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno narejen!")  
+
+@get('/user/<username>/remove_ad_<id>')
+@cookie_required
+def remove_ad(username, id):
+    oglasS.izbrisi_oglas(id)
+    uporabnik = authS.dobi_uporabnika(username)
+    oglasi = authS.dobi_oglase_uporabnika(uporabnik)
+    slika = request.files['slika']
+    filename = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", slika.filename)
+    os.remove(os.path.join(dirname,'presentation','static','images'),filename)
+    return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno izbrisan!")  
+
+@get('/user/<username>/messages')
+@cookie_required
+def messages(username):
+    uporabnik = authS.dobi_uporabnika(username)
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    if not uporabnik.uporabnisko_ime == trenutni_uporabnik:
+        return template("napaka.html")
+    sporocila = authS.dobi_sporocila(uporabnik)
+    sporocila = sporocila[0]
+    sporocila = razgradi(sporocila)
+    nova = []
+    ogledana = []
+    for sporocilo in sporocila:
+        if sporocilo[2] == 'False':
+            nova.append(sporocilo)
+        else:
+            ogledana.append(sporocilo)
+    print(sporocila)
+    print(nova)
+    print(ogledana)
+    return template("sporocila.html", uporabnik=uporabnik,sporocila=sporocila,nova=nova,ogledana=ogledana)
+
+
+
+
+
+
+
+
+
+############################################## POMOZNO
+
+def razgradi(seznam):
+    chunk_size = 3
+    result = []
+    for i in range(0, len(seznam), chunk_size):
+        chunk = seznam[i:i + chunk_size]
+        chunk[0] = chunk[0].strip('[]')
+        chunk[2] = chunk[2].strip('[]')
+        result.append(chunk)
+    return result
+
+
 
 
 

@@ -2,7 +2,7 @@
 
 %c_link = '/user/<username>/new_ad'
 %user_ulr_ad = url(c_link, username=uporabnik.uporabnisko_ime)
-<form action="{{user_ulr_ad}}" method="POST" style="width:60%">
+<form action="{{user_ulr_ad}}" method="POST" style="width:60%" enctype="multipart/form-data">
     <div class="form-group">
       <label for="naslov">Naslov oglasa:</label>
       <input type="input" class="form-control" name="naslov"  placeholder="Katero stvar prodajate danes?">
@@ -29,9 +29,9 @@
 
     <div class="form-group"></div>
         <p>Naloži sliko:</p>
-        <input type="image" id="myFile" name="slika">
+        <input type="file" id="slika" name="slika" accept="image/*">
     </div>
-    
+
     <button type="submit" class="btn btn-primary">Objavi oglas</button>
 </form>
   

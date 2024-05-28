@@ -41,7 +41,13 @@ class Repo:
             VALUES (DEFAULT, %s, %s, %s, %s, %s, %s)
             """,(o.prodajalec.uporabnisko_ime, o.kategorija, o.opis, o.naslov, o.cena, o.slika,))
         self.conn.commit()  
-              
+    
+    def izbrisi_oglas(self, id):
+        self.cur.execute("""
+            DELETE FROM oglasi
+            WHERE id=%s            
+            """,(id,))
+        self.conn.commit()
     ###################################################### UPORABNIKI
 
     def dobi_uporabnika(self,username):
@@ -67,7 +73,13 @@ class Repo:
             """,(sp,u.uporabnisko_ime,))
         self.conn.commit()
 
-
+    def dobi_sporocila(self, u):
+        self.cur.execute("""
+            SELECT sporocila FROM uporabniki
+            WHERE uporabnisko_ime=%s             
+            """,(u.uporabnisko_ime,))
+        s = self.cur.fetchone()
+        return s
     
     ###################################################### KATEGORIJE
     

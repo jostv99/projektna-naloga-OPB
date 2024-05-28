@@ -6,17 +6,20 @@
     <div>
         <ul>
             %url_nov_oglas = url('new_ad_post', username=uporabnik.uporabnisko_ime)
+            %url_sporocila = url('messages', username=uporabnik.uporabnisko_ime)
             <li><a href="{{url_nov_oglas}}">Dodaj nov oglas.</a></li>
             <li><a href="">Uredi svoj profil.</a></li>
-            <li><a href="">Oglej si sporočila</a></li>
+            <li><a href="{{url_sporocila}}">Oglej si sporočila</a></li>
         </ul>
     </div>
     
     <div>
         %for ad in oglasi:
         %new_url = url('oglas', x=ad.id)
+        %edit_url = None
+        %delete_url = url('remove_ad', username=uporabnik.uporabnisko_ime, id=ad.id)
         <ul>
-            <li><a href="{{new_url}}">{{ad.naslov}}</a></li>
+            <li><a href="{{new_url}}">{{ad.naslov}}</a><br><a href="">Uredi Oglas</a><br><a href="{{delete_url}}">Izbriši oglas</a></li>
         </ul>
         %end
     </div>
