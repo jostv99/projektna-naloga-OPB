@@ -8,21 +8,20 @@
 </head>
 <body> 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="navbar-nav">     
+        <div class="navbar-nav">
+          %if uporabnik is not None:            
           <a class="nav-link active" href="{{url('/')}}">Domača stran</a>
-          %if uporabnik is not None:
           %user_url = url('user', username=uporabnik.uporabnisko_ime)
           <a class="nav-link" href="{{user_url}}">Uredi svoj profil</a>
-          <a class="dropdown-item" href="{{url('/logout')}}">Odjava</a>          
+          <a class="dropdown-item" href="{{url('/logout')}}">Odjava</a>       
+          <form action="{{url('/search')}}" method="POST">
+            <label for="search">Išči:</label>
+            <input type="text" id="search" name="search"><br><br>
+            <input type="submit" value="Submit">
+          </form> 
           %end
         </div>
 
-        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-
-        </div>
-
-       
-        
 
          
       

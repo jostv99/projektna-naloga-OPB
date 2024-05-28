@@ -6,7 +6,8 @@
     <div>
         <p>{{oglas.opis}}</p>
         %if oglas.slika is not None:
-            <img src="{{oglas.slika}}" alt="Prodajalec ni priložil nobene slike.">
+            %url_stat = url('static_images',filename=oglas.slika)
+            <img src="{{url_stat}}" alt="Prodajalec ni priložil nobene slike." style="max-width:300px;width:100%">
         %end
     </div>
     <div>

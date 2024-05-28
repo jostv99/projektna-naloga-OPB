@@ -8,7 +8,7 @@ from services.kategorija_service import KategorijaService
 import auth as auth
 import re
 
-#popravi bazo da so def sporocila {} in ne NULL, da sporocila shranijo od koda so prisla.....
+#popravi bazo da so def sporocila {} in ne NULL, da sporocila shranijo od koga so prisla.....
 #dodaj viewed za najbolj ogledane oglase?
 #dodaj da je ogled svojega profila drugacen--urejanje, dodajanje info, oglasov, branje sporocil...
 #css, urejanje html, lepsi izgled...
@@ -37,9 +37,9 @@ def cookie_required(f):
 
 
 
-@get('/static/<filename:path>')
-def static(filename):
-    return static_file(filename, root='static')
+@get('/presentation/static/images/<filename:path>')
+def static_images(filename):
+    return static_file(filename, root='presentation/static/images')
 
 @get('/')
 @cookie_required
@@ -108,6 +108,7 @@ def oglas(x):
         trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik) 
     if oglasS.obstaja_oglas(x):
         oglas = oglasS.dobi_oglas(x)
+        print(oglas.slika)
         return template("oglas.html", oglas=oglas,uporabnik=trenutni_uporabnik,napaka=None)
     else:
         return template("oglas.html",oglas=None,uporabnik=trenutni_uporabnik,napaka=None)
@@ -121,7 +122,7 @@ def oglas_post(x):
         return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo mora imeti vsebino.")
     prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
     trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
-    sporocilo = '{'+'['+trenutni_uporabnik+','+sporocilo+','+'False'+']'+'}'
+    sporocilo = '{'+'['+trenutni_uporabnik+','+str(oglas.id)+','+sporocilo+','+'False'+']'+'}'
     authS.poslji_sporocilo(prodajalec,sporocilo)
     print(sporocilo)
     trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
@@ -160,11 +161,11 @@ def new_ad_post(username): #dodaj kaksen error...
     slika = request.files['slika']
     filename = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", slika.filename)
     slika.save(os.path.join(dirname,'presentation','static','images'),filename)
-    oglas = oglasS.naredi_oglas(uporabnik,naslov,opis,cena,kategorija,filename)
+    oglasS.naredi_oglas(uporabnik,naslov,opis,cena,kategorija,filename)
     oglasi = authS.dobi_oglase_uporabnika(uporabnik)
     return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno narejen!")  
 
-@get('/user/<username>/remove_ad_<id>')
+@get('/user/<username>/remove_ad_<id>') #pogoj na sliko ne dela? nalozi lahko katerokoli datoteko
 @cookie_required
 def remove_ad(username, id):
     oglasS.izbrisi_oglas(id)
@@ -188,7 +189,7 @@ def messages(username):
     nova = []
     ogledana = []
     for sporocilo in sporocila:
-        if sporocilo[2] == 'False':
+        if sporocilo[3] == 'False':
             nova.append(sporocilo)
         else:
             ogledana.append(sporocilo)
@@ -197,23 +198,36 @@ def messages(username):
     print(ogledana)
     return template("sporocila.html", uporabnik=uporabnik,sporocila=sporocila,nova=nova,ogledana=ogledana)
 
+@post('/search')
+def search_post():
+    item = request.forms.get("search")
+    oglasi = oglasS.isci_oglase(item)
+    uporabnik=None
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    if trenutni_uporabnik is not None:
+        uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
+    return template("search.html",oglasi=oglasi,uporabnik=uporabnik,iskanje=item)
 
-
-
-
-
-
-
+@get('/search/<item>')
+def search(item):
+    item = item[7:]
+    oglasi = oglasS.isci_oglase(item)
+    uporabnik=None
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    if trenutni_uporabnik is not None:
+        uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
+    return template("search.html",oglasi=oglasi,uporabnik=uporabnik,iskanje=item)
 
 ############################################## POMOZNO
 
 def razgradi(seznam):
-    chunk_size = 3
+    print(seznam)
+    chunk_size = 4
     result = []
     for i in range(0, len(seznam), chunk_size):
         chunk = seznam[i:i + chunk_size]
         chunk[0] = chunk[0].strip('[]')
-        chunk[2] = chunk[2].strip('[]')
+        chunk[3] = chunk[3].strip('[]')
         result.append(chunk)
     return result
 

@@ -7,14 +7,14 @@
         <p>Ni novih sporočil.</p>
     %else:
         %for sporocilo in nova:
-        <p>{{sporocilo[1]}}</p>
+        <p>Novo sporočilo od uporabnika {{sporocilo[0]}}!</p>
         %end
 </div>
 
 <div>
     <h3>Vsa sporočila:</h3>
     %for sporocilo in sporocila:
-    <p>{{sporocilo[1]}}</p>
+    <p>Sporočilo od uporabnika {{sporocilo[0]}}.</p>
     %end
 </div>
 

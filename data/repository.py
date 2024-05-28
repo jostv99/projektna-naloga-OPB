@@ -18,6 +18,19 @@ class Repo:
         o = Oglas.from_dict(self.cur.fetchone())
         return o
     
+    def isci_oglase(self, opis):
+        if opis == None:
+            opis = '%'
+        else:
+            opis = '%' + opis + '%'
+        self.cur.execute("""
+            SELECT * FROM oglasi
+            WHERE LOWER(naslov) LIKE LOWER(%s) OR LOWER(opis) LIKE LOWER(%s)
+            ORDER BY naslov
+            """,(opis ,opis,))
+        oglasi = [Oglas.from_dict(t) for t in self.cur.fetchall()]
+        return oglasi        
+    
     def dobi_nakljucne_oglase(self, num):
         self.cur.execute("""SELECT * FROM oglasi 
                          ORDER BY RANDOM() LIMIT %s

@@ -1,0 +1,17 @@
+%rebase('osnovna.html', naslov='search', stran='search')
+
+
+<div>
+    %if oglasi == []:
+        <p>Oglasov s ključno besedo "{{iskanje}}" ni.</p>
+    %else:
+    %for oglas in oglasi:
+    %oglas_url= url('oglas', x=oglas.id)
+    <a href="{{oglas_url}}">{{oglas.naslov}}</a><br>
+    %end
+</div>
+
+
+
+
+

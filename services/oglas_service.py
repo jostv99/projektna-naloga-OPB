@@ -40,3 +40,6 @@ class OglasService:
         
     def izbrisi_oglas(self, id):
         return self.repo.izbrisi_oglas(id)
+    
+    def isci_oglase(self, opis):
+        return self.repo.isci_oglase(opis)
