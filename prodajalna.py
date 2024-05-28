@@ -118,15 +118,13 @@ def oglas(x):
 def oglas_post(x):
     oglas = oglasS.dobi_oglas(x)
     sporocilo = request.forms.get('sporocilo')
-    if sporocilo == '': #nekaj ne dela ker ne pokaze napake. Prvo prejeto sporocilo ni string (v bazi)?
-        return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo mora imeti vsebino.")
     prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
     trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
-    sporocilo = '{'+'['+trenutni_uporabnik+','+str(oglas.id)+','+sporocilo+','+'False'+']'+'}'
+    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)  
+    if sporocilo == "":
+        return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo mora imeti vsebino.")      
+    sporocilo = '{'+'['+trenutni_uporabnik.uporabnisko_ime+','+str(oglas.id)+','+sporocilo+','+'False'+']'+'}'
     authS.poslji_sporocilo(prodajalec,sporocilo)
-    print(sporocilo)
-    trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
-
     return template("oglas.html",oglas=oglas,uporabnik=trenutni_uporabnik,napaka="Sporočilo uspešno poslano!")
 
 @get('/user/<username>')
