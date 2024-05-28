@@ -6,7 +6,7 @@ from services.auth_service import AuthService
 from services.oglas_service import OglasService
 from services.kategorija_service import KategorijaService
 import auth as auth
-import re, ast
+import re
 
 #popravi bazo da so def sporocila {} in ne NULL, da sporocila shranijo od koda so prisla.....
 #dodaj viewed za najbolj ogledane oglase?
