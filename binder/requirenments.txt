@@ -4,4 +4,3 @@ dataclasses_json
 bottle
 bcrypt
 jupyter-server-proxy
-re
