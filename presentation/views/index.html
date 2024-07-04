@@ -1,19 +1,52 @@
 %rebase('osnovna.html', naslov='index', stran='index')
 
-<div >
-    <h2>Nekaj oglasov:</h2>
-        <br>  
-      <div style="display: flex;">
-          <ul>          
-            %for ad in oglasi:
-            %new_url = url('oglas', x=ad.id)
-            <li><a href="{{new_url}}">{{ad.naslov}}</a></li>
-          </ul>
-            %end
   
-  
-      </div>    
-     
+<div class="search-results-container">
+  <h2>Nekaj naključnih oglasov:</h2>  
+  <div class="ads-list">
+    %for oglas in oglasi:
+      %oglas_url= url('oglas', x=oglas.id)
+        <a href="{{oglas_url}}" class="ad-link">{{oglas.naslov}}</a><br>
+        %if oglas.slika is not None:
+        %url_stat = url('static_images',filename=oglas.slika)
+        <img src="{{url_stat}}" alt="Prodajalec ni priložil nobene slike." style="max-width:100px;width:100%">
+        %end
+        %if oglas.opis is not None:
+          %if len(oglas.opis) > 50:
+              %te = oglas.opis[:50]
+              %te = te + "..."
+              <p>{{te}}</p>                        
+          %else:
+              <p>{{oglas.opis}}</p>
+          %end
+        %else:
+          <p>Ta oglas je žal brez opisa.</p>
+        %end
+    %end
+        </div>
+</div>
+
+<div class="search-results-container">
+  <h2>Nazadnje dodani oglasi:</h2>  
+  <div class="ads-list">
+  %for oglas in zadnji_oglasi:
+    %oglas_url= url('oglas', x=oglas.id)
+      <a href="{{oglas_url}}" class="ad-link">{{oglas.naslov}}</a><br>
+      %if oglas.slika is not None:
+      %url_stat = url('static_images',filename=oglas.slika)
+      <img src="{{url_stat}}" alt="Prodajalec ni priložil nobene slike." style="max-width:100px;width:100%">
+      %end
+      %if oglas.opis is not None:
+        %if len(oglas.opis) > 50:
+            %te = oglas.opis[:50]
+            %te = te + "..."
+            <p>{{te}}</p>                        
+        %else:
+            <p>{{oglas.opis}}</p>
+        %end
+      %else:
+        <p>Ta oglas je žal brez opisa.</p>
+      %end
+  %end
   </div>
-  
-  
+</div>

@@ -5,7 +5,7 @@
 
     <div class="search-results-container">
         %if oglasi == []:
-            <p class="no-results">Oglasov s ključno besedo "{{iskanje}}" ni.</p>
+            <p class="no-results">Oglasov v tej kategoriji ni.</p>
         %elif oglasi is not None:
             <div class="ads-list">
                 %for oglas in oglasi:
@@ -15,18 +15,24 @@
                     %url_stat = url('static_images',filename=oglas.slika)
                     <img src="{{url_stat}}" alt="Prodajalec ni priložil nobene slike." style="max-width:100px;width:100%">
                     %end
-                    %if len(oglas.opis) > 50:
-                        %te = oglas.opis[:50]
-                        %te = te + "..."
-                        <p>{{te}}</p>                        
+                    %if oglas.opis is not None:
+                        %if len(oglas.opis) > 50:
+                            %te = oglas.opis[:50]
+                            %te = te + "..."
+                            <p>{{te}}</p>                        
+                        %else:
+                            <p>{{oglas.opis}}</p>
+                        %end
                     %else:
-                        <p>{{oglas.opis}}</p>
+                        <p>Ta oglas je žal brez opisa.</p>
                     %end
                 %end
             </div>
         %end
     </div>
 </body>
+<br>
+<a class="btn btn-primary" href="{{url('/search_cat')}}">Nazaj na kategorije</a>  
 
 %if napaka:
   <p class="opozorilo">{{napaka}}</p>

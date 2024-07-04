@@ -3,8 +3,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spletna prodajalna Uš</title>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-    <link rel="stylesheet" href="styles.css">
+    %url_stat = url('static',filename='styles.css')
+    <link rel="stylesheet" href="{{url_stat}}">
 </head>
 <body> 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -13,12 +13,14 @@
           <a class="nav-link active" href="{{url('/')}}">Domača stran</a>
           %user_url = url('user', username=uporabnik.uporabnisko_ime)
           <a class="nav-link" href="{{user_url}}">Uredi svoj profil</a>
-          <a class="dropdown-item" href="{{url('/logout')}}">Odjava</a>       
+          <a class="dropdown-item" href="{{url('/logout')}}">Odjava</a>
+          <a class="nav-link" href="{{url('/search_cat')}}">Išči po kategorijah</a>                 
           <form action="{{url('/search')}}" method="POST">
-            <label for="search">Išči:</label>
-            <input type="text" id="search" name="search"><br><br>
-            <input type="submit" value="Submit">
+            <label for="search" class="nav-link">Išči:</label>
+            <input type="text" id="search" name="search">
+            <input type="submit" class="btn btn-primary" value="Submit">
           </form> 
+
           %end
         </div>
 

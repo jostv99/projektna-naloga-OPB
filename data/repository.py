@@ -38,6 +38,13 @@ class Repo:
         oglasi = [Oglas.from_dict(t) for t in self.cur.fetchall()]
         return oglasi
     
+    def dobi_zadnje_oglase(self, num):
+        self.cur.execute("""SELECT * FROM oglasi
+                         ORDER BY id DESC LIMIT %s
+                         """, (num,))
+        oglasi = [Oglas.from_dict(t) for t in self.cur.fetchall()]
+        return oglasi
+        
     def dobi_oglase_uporabnika(self, u):
         self.cur.execute("""
             SELECT * FROM oglasi
@@ -61,6 +68,15 @@ class Repo:
             WHERE id=%s            
             """,(id,))
         self.conn.commit()
+        
+    def oglas_by_cat(self, cat):
+        id = self.vrni_id(cat)
+        self.cur.execute("""
+            SELECT * FROM oglasi WHERE kategorija=%s
+        """,(id,))
+        oglasi = [Oglas.from_dict(t) for t in self.cur.fetchall()]
+        return oglasi
+    
     ###################################################### UPORABNIKI
 
     def dobi_uporabnika(self,username):
@@ -94,6 +110,26 @@ class Repo:
         s = self.cur.fetchone()
         return s
     
+    def preberi_sporocilo(self, s, u):
+        self.cur.execute("""
+            SELECT sporocila FROM uporabniki WHERE uporabnisko_ime=%s             
+        """,(u.uporabnisko_ime,))
+        st = self.cur.fetchone()
+        st = st[0]
+        st = razgradi(st)
+        for sporocilo in st:
+            if sporocilo == s:
+                sporocilo[3] = 'True'
+        st = str(st)
+        st = "{" + st[1:-1] + "}"
+        st = st.replace('"\'',"")
+        st = st.replace('\'"','')
+        st = st.replace("'","")
+        self.cur.execute("""
+        UPDATE uporabniki SET sporocila = %s WHERE uporabnisko_ime=%s
+        """,(st,u.uporabnisko_ime,))
+        self.conn.commit()
+    
     ###################################################### KATEGORIJE
     
     def vrni_opis(self,id):
@@ -107,8 +143,9 @@ class Repo:
         self.cur.execute("""
            SELECT id FROM kategorije WHERE opis=%s
            """,(opis,))
-        id = Kategorija.from_dict(self.cur.fetchone())
-        return id[0] 
+        k = Kategorija.from_dict(self.cur.fetchone())
+        print(id)
+        return k.id
     
     def vrni_vse_kategorije(self):
         self.cur.execute("""
@@ -118,3 +155,17 @@ class Repo:
         kat = [Kategorija.from_dict(t) for t in self.cur.fetchall()]
         return kat   
         
+        
+        
+##################### POMOZNE
+
+def razgradi(seznam):
+    print(seznam)
+    chunk_size = 4
+    result = []
+    for i in range(0, len(seznam), chunk_size):
+        chunk = seznam[i:i + chunk_size]
+        chunk[0] = chunk[0].strip('[]')
+        chunk[3] = chunk[3].strip('[]')
+        result.append(chunk)
+    return result

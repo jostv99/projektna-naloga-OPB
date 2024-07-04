@@ -53,3 +53,6 @@ class AuthService:
     
     def dobi_sporocila(self, u):
         return self.repo.dobi_sporocila(u)
+    
+    def preberi_sporocilo(self, s, u):
+        return self.repo.preberi_sporocilo(s, u)

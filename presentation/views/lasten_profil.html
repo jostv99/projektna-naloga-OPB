@@ -1,29 +1,55 @@
-%rebase('osnovna.html', naslov='lasten_profil', stran='lasten_profil')
-    
+<!DOCTYPE html>
+<html>
 
+<body>
+    %rebase('osnovna.html')
 
-<h2>Pozdravljen {{uporabnik.uporabnisko_ime}}!</h2>
-    <div>
-        <ul>
-            %url_nov_oglas = url('new_ad_post', username=uporabnik.uporabnisko_ime)
-            %url_sporocila = url('messages', username=uporabnik.uporabnisko_ime)
-            <li><a href="{{url_nov_oglas}}">Dodaj nov oglas.</a></li>
-            <li><a href="">Uredi svoj profil.</a></li>
-            <li><a href="{{url_sporocila}}">Oglej si sporočila</a></li>
-        </ul>
+    <div class="profile-container">
+        <h2>Pozdravljen {{uporabnik.uporabnisko_ime}}!</h2>
+        <div class="profile-actions">
+            <ul class="profile-action-list">
+                %url_nov_oglas = url('new_ad_post', username=uporabnik.uporabnisko_ime)
+                %url_sporocila = url('messages', username=uporabnik.uporabnisko_ime)
+                %url_uredi = url('uredi_profil', username=uporabnik.uporabnisko_ime)
+                <li><a href="{{url_nov_oglas}}" class="profile-action-link">Dodaj nov oglas.</a></li>
+                <li><a href="{{url_uredi}}" class="profile-action-link">Uredi svoj profil.</a></li>
+                <li><a href="{{url_sporocila}}" class="profile-action-link">Oglej si sporočila</a></li>
+            </ul>
+        </div>
+        
+        <div class="profile-content">
+            <div class="ads-container">
+                <h2>Tvoji oglasi:</h2>
+                %if oglasi == []:
+                    <p>Trenutno še nimaš objavljenega oglasa.</p>
+                %end
+                %for ad in oglasi:
+                %new_url = url('oglas', x=ad.id)
+                %edit_url = None
+                %delete_url = url('remove_ad', username=uporabnik.uporabnisko_ime, id=ad.id)
+                <ul class="ad-list">
+                    <li class="ad-item">
+                        <a href="{{new_url}}" class="ad-link">{{ad.naslov}}</a><br>
+                        <a href="#" class="ad-edit-link">Uredi Oglas</a><br>
+                        <a href="{{delete_url}}" class="ad-delete-link">Izbriši oglas</a>
+                    </li>
+                </ul>
+                %end
+            </div>
+            <div class="info-container">
+                <ul class="info-list">
+                    <h3>Tvoji podatki:</h3>
+                    <li><span>Prebivališče:</span> {{uporabnik.kraj_bivanja}}</li>
+                    <li><span>Telefon:</span> {{uporabnik.telefon}}</li>
+                    <li><span>Email:</span> {{uporabnik.email}}</li>
+                    <li><span>Kredibilnost:</span> {{uporabnik.kredibilnost}}</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    
-    <div>
-        %for ad in oglasi:
-        %new_url = url('oglas', x=ad.id)
-        %edit_url = None
-        %delete_url = url('remove_ad', username=uporabnik.uporabnisko_ime, id=ad.id)
-        <ul>
-            <li><a href="{{new_url}}">{{ad.naslov}}</a><br><a href="">Uredi Oglas</a><br><a href="{{delete_url}}">Izbriši oglas</a></li>
-        </ul>
-        %end
-    </div>
 
-%if napaka:
-  <p class="opozorilo">{{napaka}}</p>
-%end
+    %if napaka:
+        <p class="opozorilo">{{napaka}}</p>
+    %end
+</body>
+</html>

@@ -43,3 +43,9 @@ class OglasService:
     
     def isci_oglase(self, opis):
         return self.repo.isci_oglase(opis)
+    
+    def oglas_by_cat(self, cat):
+        return self.repo.oglas_by_cat(cat)
+    
+    def dobi_zadnje_oglase(self, n):
+        return self.repo.dobi_zadnje_oglase(n)

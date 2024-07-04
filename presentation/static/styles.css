@@ -1,67 +1,252 @@
+/* Reset some default styles */
+body, h1, h2, h3, h4, h5, h6, p, div, nav, a, form, input, select, button, label, ul, li, br {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General body styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
-header {
-    background-color: #333;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
+/* Navbar styles */
+.navbar {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e3e3e3;
+    padding: 1rem 2rem;
 }
 
-header h1 {
-    margin: 0;
+.navbar-nav {
+    display: flex;
+    align-items: center;
 }
 
-nav {
-    margin-top: 10px;
+.nav-link {
+    color: #007bff;
+    text-decoration: none;
+    margin-right: 1.5rem;
+    font-size: 1.1rem;
+    transition: color 0.3s;
 }
 
-nav button {
-    background-color: #4CAF50;
+.nav-link:hover {
+    color: #0056b3;
+}
+
+.nav-link.active {
+    font-weight: bold;
+}
+
+.dropdown-item {
+    color: #dc3545;
+    text-decoration: none;
+    margin-right: 1.5rem;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+}
+
+.dropdown-item:hover {
+    color: #c82333;
+}
+
+/* Search form styles */
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-form label {
+    margin-right: 0.5rem;
+    font-weight: bold;
+}
+
+.search-form input[type="text"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+}
+
+.search-form input[type="submit"] {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
     border: none;
     color: white;
-    padding: 10px 20px;
-    margin: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    transition: background-color 0.3s;
 }
 
-nav button:hover {
-    background-color: #45a049;
+.search-form input[type="submit"]:hover {
+    background-color: #0056b3;
 }
 
-main {
-    padding: 20px;
-    text-align: center;
+/* Container styles */
+.container, .content, .form-container, .profile-container, .search-results-container {
+    width: 80%;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
-main h2 {
-    margin-top: 0;
+h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
 }
 
-main ul {
-    list-style-type: none;
+h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+/* Profile actions styles */
+.profile-actions {
+    margin-bottom: 2rem;
+}
+
+.profile-action-list {
+    list-style: none;
     padding: 0;
 }
 
-main li {
-    background-color: white;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
+.profile-action-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.profile-action-link:hover {
+    color: #0056b3;
+}
+
+/* Ads container styles */
+.profile-content {
+    display: flex;
+}
+
+.ads-container {
+    flex: 2;
+    margin-right: 2rem;
+    left: 0;
+}
+
+.ad-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.ad-item {
+    margin-bottom: 1rem;
+}
+
+.ad-link, .ad-edit-link, .ad-delete-link {
+    font-size: 1.1rem;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.ad-link:hover, .ad-edit-link:hover, .ad-delete-link:hover {
+    color: #0056b3;
+}
+
+.ad-delete-link {
+    color: #dc3545;
+}
+
+.ad-delete-link:hover {
+    color: #c82333;
+}
+
+/* User info container styles */
+.info-container {
+    flex: 1;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    right: 0;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+}
+
+.info-list li {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.info-list li span {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Form styles */
+.ad-form {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-control, .form-control-file {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-footer {
-    background-color: #333;
-    color: white;
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
     text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Warning message styles */
+.opozorilo {
+    color: red;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+/* No results message styles */
+.no-results {
+    color: #ff0000;
+    font-weight: bold;
+    margin-top: 1rem;
 }

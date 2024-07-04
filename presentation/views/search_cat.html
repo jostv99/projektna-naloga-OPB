@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+    %rebase('osnovna.html')
+
+    <div class="search-results-container">
+        %if cat is not None:
+            <div class="ads-list">
+                %for c in cat:
+                    %cat_url= url('search_catf', cat=c.opis)
+                    <a href="{{cat_url}}" class="ad-link">{{c.opis}}</a><br>
+                %end
+            </div>
+        %end
+    </div>
+</body>
+
+
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+  <p>Nazaj na <a href="{{url('/')}}">domačo stran.</a></p>
+%end
+
+
+</html>
+
+

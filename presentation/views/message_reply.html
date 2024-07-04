@@ -1,0 +1,24 @@
+%rebase('osnovna.html')
+
+<h1>Sporočilo uporabnika {{sporocilo[0]}}:</h1>
+<p>{{sporocilo[2]}}</p>
+<br>
+<form action="" method="POST" style="width:60%">
+    <div class="form-group">
+        <label for="sporocilo">Odgovori na sporočilo:</label>
+        <input type="text" class="form-control" name="msg" placeholder="Vaše sporočilo">
+    </div>
+     
+    <button type="submit" class="btn btn-primary">Pošlji</button>
+</form>
+<br>
+<div>
+%url_sporocila = url('messages', username=uporabnik.uporabnisko_ime)
+<a href="{{url_sporocila}}" class="btn btn-primary">Nazaj na sporočila</a>
+
+</div>
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+

@@ -1,22 +1,53 @@
-%rebase('osnovna.html', naslov='sporocila', stran='sporocila')
+%rebase('osnovna.html')
 
-<h2>Sporočila:</h2>
 <div>
     <h3>Nova sporočila:</h3>   
     %if nova == []:
         <p>Ni novih sporočil.</p>
     %else:
         %for sporocilo in nova:
-        <p>Novo sporočilo od uporabnika {{sporocilo[0]}}!</p>
+            %user_url = url('user', username=sporocilo[0])  
+            %sporocilo_url = url('message_reply', username=uporabnik.uporabnisko_ime, sporocilo=sporocilo)
+            %for oglas in oglasi:
+                %najden = False
+                %if oglas.id == int(sporocilo[1]):
+                    %new_url = url('oglas', x=oglas.id)
+                    %najden = True
+                    <p>Novo sporočilo od uporabnika <a href="{{user_url}}">{{sporocilo[0]}}</a>, za oglas <a href="{{new_url}}">{{oglas.naslov}}</a>. <a href="{{sporocilo_url}}">Preberi ga tu.</a></p>
+                %end
+                %if not najden:
+                    <p>Novo sporočilo od uporabnika <a href="{{user_url}}">{{sporocilo[0]}}</a>, za oglas ki več ne obstaja</a>. <a href="{{sporocilo_url}}">Preberi ga tu.</a></p>
+                %end
+            %end
         %end
+    %end
 </div>
 
 <div>
     <h3>Vsa sporočila:</h3>
+    %if sporocila == []:
+    <p>Nisi prejel še nobenega sporocila.</p>
+    %end
     %for sporocilo in sporocila:
-    <p>Sporočilo od uporabnika {{sporocilo[0]}}.</p>
+        %user_url = url('user', username=sporocilo[0])
+        %sporocilo_url = url('message_reply', sporocilo=sporocilo, username=uporabnik.uporabnisko_ime)
+        %for oglas in oglasi:
+        %najden = False
+            %if oglas.id == int(sporocilo[1]):
+                %new_url = url('oglas', x=oglas.id)
+                %najden = True
+                <p>Sporočilo od uporabnika <a href="{{user_url}}">{{sporocilo[0]}}</a>, za oglas <a href="{{new_url}}">{{oglas.naslov}}</a>. <a href="{{sporocilo_url}}">Preberi ga tu.</a></p>
+            %end
+            %if not najden:
+            <p>Sporočilo od uporabnika <a href="{{user_url}}">{{sporocilo[0]}}</a>, za oglas ki več ne obstaja</a>. <a href="{{sporocilo_url}}">Preberi ga tu.</a></p>
+            %end
+        %end
     %end
 </div>
+<br>
+%url_sporocila = url('user', username=uporabnik.uporabnisko_ime)
+<a href="{{url_sporocila}}" class="btn btn-primary">Nazaj na profil</a>
+
 
 
 

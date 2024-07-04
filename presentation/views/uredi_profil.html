@@ -1,0 +1,37 @@
+%rebase('osnovna.html')
+
+<div>
+    <div class="form-container">
+        <h3>Posodobite svoje podatke:</h3>
+        <p>V polja vpišite podatke, ki jih želite spremeniti</p>
+        %url_posodobi = url('uredi_profil_post', username=uporabnik.uporabnisko_ime)
+        <form action="{{url_posodobi}}" method="POST" class="ad-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="naslov">Uporabniško ime:</label>
+                <input type="input" class="form-control" name="up_ime" value="{{uporabnik.uporabnisko_ime}}">
+            </div>
+
+            <div class="form-group">
+                <label for="opis">Geslo:</label>
+                <input type="password" class="form-control" name="geslo" placeholder="Vpišite novo geslo">
+            </div>
+            
+            <div class="form-group">
+                <label for="cena">Email:</label>
+                <input type="input" class="form-control" name="email" value="{{uporabnik.email}}">
+            </div>
+
+            <div class="form-group">
+                <label for="kategorija">Telefon:</label>
+                <input type="tel" class="form-control" name="telefon" value="{{uporabnik.telefon}}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Posodobi</button>
+        </form>
+</div>
+%url_sporocila = url('user', username=uporabnik.uporabnisko_ime)
+<a href="{{url_sporocila}}" class="btn btn-primary">Nazaj na profil</a>
+
+
+
+
