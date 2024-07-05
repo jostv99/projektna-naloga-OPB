@@ -1,7 +1,7 @@
 from functools import wraps
 from presentation.bottleext import get, post, run, request, template, redirect, static_file, url, response, template_user
 
-import os, psycopg2, psycopg2.extensions, psycopg2.extras, hashlib
+import os, psycopg2, psycopg2.extensions, psycopg2.extras
 from services.auth_service import AuthService
 from services.oglas_service import OglasService
 from services.kategorija_service import KategorijaService
@@ -170,7 +170,7 @@ def new_ad_post(username): #dodaj kaksen error...
     slika.save(os.path.join(dirname,'presentation','static','images'),filename)
     oglasS.naredi_oglas(uporabnik,naslov,opis,cena,kategorija,filename)
     oglasi = authS.dobi_oglase_uporabnika(uporabnik)
-    return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno narejen!")  
+    return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno objavljen!")  
 
 @get('/user/<username>/remove_ad_<id>') #pogoj na sliko ne dela? nalozi lahko katerokoli datoteko
 @cookie_required

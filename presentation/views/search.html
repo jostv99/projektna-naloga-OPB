@@ -14,15 +14,19 @@
                     %oglas_url= url('oglas', x=oglas.id)
                     <a href="{{oglas_url}}" class="ad-link">{{oglas.naslov}}</a><br>
                     %if oglas.slika is not None:
-                    %url_stat = url('static_images',filename=oglas.slika)
-                    <img src="{{url_stat}}" alt="Prodajalec ni priložil nobene slike." style="max-width:100px;width:100%">
+                        %url_stat = url('static_images',filename=oglas.slika)
+                        <img src="{{url_stat}}" alt="Prodajalec ni priložil nobene slike." style="max-width:100px;width:100%">
                     %end
-                    %if len(oglas.opis) > 50:
-                        %te = oglas.opis[:50]
-                        %te = te + "..."
-                        <p>{{te}}</p>                        
+                    %if oglas.opis is not None:
+                        %if len(oglas.opis) > 50:
+                            %te = oglas.opis[:50]
+                            %te = te + "..."
+                            <p>{{te}}</p>                        
+                        %else:
+                            <p>{{oglas.opis}}</p>
+                        %end
                     %else:
-                        <p>{{oglas.opis}}</p>
+                        <p>Ta oglas žal nima opisa.</p>
                     %end
                 %end
             </div>

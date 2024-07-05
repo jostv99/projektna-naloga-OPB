@@ -5,7 +5,7 @@
     %rebase('osnovna.html')
 
     <div class="profile-container">
-        <h2>Pozdravljen {{uporabnik.uporabnisko_ime}}!</h2>
+        <h2>Pozdravljen/a {{uporabnik.uporabnisko_ime}}!</h2>
         <div class="profile-actions">
             <ul class="profile-action-list">
                 %url_nov_oglas = url('new_ad_post', username=uporabnik.uporabnisko_ime)

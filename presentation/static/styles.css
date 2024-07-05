@@ -273,3 +273,16 @@ h3 {
     font-weight: bold;
     margin-top: 1rem;
 }
+
+.target {
+    color: #dc3545;
+    text-decoration: none;
+    margin-right: 1.5rem;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+    text-align: right;
+}
+
+.target:hover {
+    color: #c82333;
+}

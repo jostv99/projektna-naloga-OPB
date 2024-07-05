@@ -6,21 +6,26 @@
     %url_stat = url('static',filename='styles.css')
     <link rel="stylesheet" href="{{url_stat}}">
 </head>
-<body> 
+<body>
+  
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div>
+          <h1>Spletna prodajalna uš</h1>
+        </div>      
         <div class="navbar-nav">
           %if uporabnik is not None:            
           <a class="nav-link active" href="{{url('/')}}">Domača stran</a>
           %user_url = url('user', username=uporabnik.uporabnisko_ime)
-          <a class="nav-link" href="{{user_url}}">Uredi svoj profil</a>
-          <a class="dropdown-item" href="{{url('/logout')}}">Odjava</a>
+          <a class="nav-link" href="{{user_url}}">Profil</a>
+
           <a class="nav-link" href="{{url('/search_cat')}}">Išči po kategorijah</a>                 
           <form action="{{url('/search')}}" method="POST">
-            <label for="search" class="nav-link">Išči:</label>
-            <input type="text" id="search" name="search">
-            <input type="submit" class="btn btn-primary" value="Submit">
-          </form> 
-
+            <input type="text" id="search" name="search" placeholder="Brskaj po oglasih">
+            <input type="submit" class="btn btn-primary" value="Išči">
+          </form>
+          <div style="width: 150px; margin-left: auto;"><a class="target" href="{{url('/logout')}}" >Odjava</a></div>
+          
           %end
         </div>
 
