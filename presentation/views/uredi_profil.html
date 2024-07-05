@@ -40,6 +40,12 @@
             </div>         
             <button type="submit" class="btn btn-primary">Posodobi</button>               
         </form>
+        <br>
+        %url_del = url('delete_user', username=uporabnik.uporabnisko_ime)
+        <form action="{{url_del}}" method="POST" class="ad-form" enctype="multipart/form-data">
+            <button type="submit" class="btn1 btn-primary">Izbriši račun</button>    
+        </form>
+    </div>
 </div>
 %url_sporocila = url('user', username=uporabnik.uporabnisko_ime)
 <a href="{{url_sporocila}}" class="btn btn-primary">Nazaj na profil</a>

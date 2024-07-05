@@ -241,6 +241,21 @@ h3 {
     transition: background-color 0.3s;
 }
 
+.btn1 {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
 .btn:hover {
     background-color: #0056b3;
 }

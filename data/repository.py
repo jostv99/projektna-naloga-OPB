@@ -173,6 +173,14 @@ class Repo:
         """,(novo_uporabnisko_ime,novo_geslo,email,kredibilnost,telefon,kraj_bivanja,sporocila,uporabnisko_ime))
         self.conn.commit()
         
+    def izbrisi_uporabnika(self, username):
+        self.cur.execute("""
+            DELETE FROM oglasi WHERE prodajalec=%s;
+            DELETE FROM uporabniki WHERE uporabnisko_ime=%s                
+        """,(username,username))
+        self.conn.commit() 
+        
+        
     ###################################################### KATEGORIJE
     
     def vrni_opis(self,id):

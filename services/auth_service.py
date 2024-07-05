@@ -70,3 +70,6 @@ class AuthService:
     
     def preveri_email(self, e):
         return self.repo.preveri_email(e)
+    
+    def izbrisi_uporabnika(self, username):
+        return self.repo.izbrisi_uporabnika(username)

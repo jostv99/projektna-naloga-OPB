@@ -370,6 +370,14 @@ def edit_ad(username, ad):
     oglas = oglasS.dobi_oglas(ad) 
     return template("oglas.html",oglas=oglas,uporabnik=uporabnik,napaka="Oglas uspešno posodobljen!")
     
+
+@post('/user/<username>/delete_profile')
+@cookie_required
+def delete_user(username):
+    authS.izbrisi_uporabnika(username)
+    return template('login.html', uporabnik=None,napaka="Profil izbrisan.")
+
+
     
 ############################################## POMOZNO
 
