@@ -11,10 +11,7 @@
                 <input type="input" class="form-control" name="up_ime" value="{{uporabnik.uporabnisko_ime}}">
             </div>
 
-            <div class="form-group">
-                <label for="opis">Geslo:</label>
-                <input type="password" class="form-control" name="geslo" placeholder="Vpišite svoje geslo">
-            </div>
+
 
             <div class="form-group">
                 <label for="opis">Novo geslo:</label>
@@ -36,7 +33,12 @@
                 <input type="tel" class="form-control" name="kraj" value="{{uporabnik.kraj_bivanja}}">
             </div>
 
-            <button type="submit" class="btn btn-primary">Posodobi</button>
+
+            <div class="form-group">
+                <label for="opis">Geslo:</label>
+                <input type="password" class="form-control" name="geslo" placeholder="Vpišite svoje geslo">
+            </div>         
+            <button type="submit" class="btn btn-primary">Posodobi</button>               
         </form>
 </div>
 %url_sporocila = url('user', username=uporabnik.uporabnisko_ime)

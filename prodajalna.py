@@ -8,12 +8,6 @@ from services.kategorija_service import KategorijaService
 import auth as auth
 import re
 
-#popravi bazo da so def sporocila {} in ne NULL, da sporocila shranijo od koga so prisla.....
-#dodaj viewed za najbolj ogledane oglase?
-#dodaj da je ogled svojega profila drugacen--urejanje, dodajanje info, oglasov, branje sporocil...
-#css, urejanje html, lepsi izgled...
-#spremeni bazo, da vzame vec slik, kot sporocila...array
-
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
@@ -249,6 +243,17 @@ def message_reply(username,sporocilo):
     
     
 
+@get('/search/<item>')
+@cookie_required
+def search(item):
+    item = item[7:]
+    oglasi = oglasS.isci_oglase(item)
+    uporabnik=None
+    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
+    if trenutni_uporabnik is not None:
+        uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
+    return template("search.html",oglasi=oglasi,uporabnik=uporabnik,iskanje=item,napaka=None)
+
 @post('/search')
 @cookie_required
 def search_post():
@@ -262,16 +267,6 @@ def search_post():
         return template("search.html",oglasi=None,uporabnik=None,iskanje=None, napaka="V iskalno polje vnesite vsaj en znak!")
     return template("search.html",oglasi=oglasi,uporabnik=uporabnik,iskanje=item,napaka=None)
 
-@get('/search/<item>')
-@cookie_required
-def search(item):
-    item = item[7:]
-    oglasi = oglasS.isci_oglase(item)
-    uporabnik=None
-    trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
-    if trenutni_uporabnik is not None:
-        uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)
-    return template("search.html",oglasi=oglasi,uporabnik=uporabnik,iskanje=item,napaka=None)
 
 @get('/user/<username>/edit')
 @cookie_required

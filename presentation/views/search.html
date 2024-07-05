@@ -1,7 +1,9 @@
-<!DOCTYPE html>
-<html>
+
+
+
+%rebase('osnovna.html')    
 <body>
-    %rebase('osnovna.html')
+
 
     <div class="search-results-container">
         %if oglasi == []:
@@ -32,6 +34,3 @@
   <p class="opozorilo">{{napaka}}</p>
   <p>Nazaj na <a href="{{url('/')}}">domačo stran.</a></p>
 %end
-
-
-</html>
