@@ -29,7 +29,7 @@ class AuthService:
     def dodaj_uporabnika(self, uporabnisko_ime, geslo, email, telefon, kraj_bivanja):
         bytes = geslo.encode('utf-8')
         salt = bcrypt.gensalt()
-        password_hash = bcrypt.hashpw(bytes, salt)
+        password_hash = bcrypt.hashpw(bytes, salt)  
 
         u = Uporabnik(
                 uporabnisko_ime = uporabnisko_ime,
@@ -45,6 +45,14 @@ class AuthService:
         self.repo.dodaj_uporabnika(u)
         return u
     
+    def posodobi_uporabnika(self, uporabnisko_ime, novo_uporabnisko_ime, novo_geslo, email, telefon, kraj_bivanja, kredibilnost, sporocila):
+        bytes = novo_geslo.encode('utf-8')
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(bytes, salt)
+        print(password_hash.decode())
+        
+        self.repo.posodobi_uporabnika(uporabnisko_ime, novo_uporabnisko_ime, password_hash.decode(), email, telefon, kraj_bivanja, kredibilnost, sporocila)
+        
     def poslji_sporocilo(self, u, sporocilo):
         self.repo.poslji_sporocilo(u,sporocilo)
 
@@ -56,3 +64,9 @@ class AuthService:
     
     def preberi_sporocilo(self, s, u):
         return self.repo.preberi_sporocilo(s, u)
+    
+    def preveri_telefon(self, t):
+        return self.repo.preveri_telefon(t)
+    
+    def preveri_email(self, e):
+        return self.repo.preveri_email(e)

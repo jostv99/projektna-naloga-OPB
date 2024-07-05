@@ -25,12 +25,12 @@
                 %end
                 %for ad in oglasi:
                 %new_url = url('oglas', x=ad.id)
-                %edit_url = None
+                %edit_url = url('edit_ad', username=uporabnik.uporabnisko_ime, ad = ad.id)
                 %delete_url = url('remove_ad', username=uporabnik.uporabnisko_ime, id=ad.id)
                 <ul class="ad-list">
                     <li class="ad-item">
                         <a href="{{new_url}}" class="ad-link">{{ad.naslov}}</a><br>
-                        <a href="#" class="ad-edit-link">Uredi Oglas</a><br>
+                        <a href="{{edit_url}}" class="ad-edit-link">Uredi Oglas</a><br>
                         <a href="{{delete_url}}" class="ad-delete-link">Izbriši oglas</a>
                     </li>
                 </ul>

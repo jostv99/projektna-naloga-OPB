@@ -49,3 +49,6 @@ class OglasService:
     
     def dobi_zadnje_oglase(self, n):
         return self.repo.dobi_zadnje_oglase(n)
+    
+    def posodobi_oglas(self, ad, naslov, opis, cena, kategorija, filename):
+        return self.repo.posodobi_oglas(ad, naslov, opis, cena, kategorija, filename)

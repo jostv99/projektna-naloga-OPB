@@ -123,6 +123,7 @@ def oglas(x):
 def oglas_post(x):
     oglas = oglasS.dobi_oglas(x)
     sporocilo = request.forms.get('sporocilo')
+    sporocilo = sporocilo.replace(",","!;")
     prodajalec = authS.dobi_uporabnika(oglas.prodajalec)
     trenutni_uporabnik = request.get_cookie("uporabnik",secret=auth.skrivnost)
     trenutni_uporabnik = authS.dobi_uporabnika(trenutni_uporabnik)  
@@ -225,7 +226,9 @@ def message_reply(username, sporocilo):
     print(sporocilo)
     if sporocilo[3] == 'False':
         authS.preberi_sporocilo(sporocilo,uporabnik)
-    return template("message_reply.html", uporabnik=uporabnik,sporocilo=sporocilo,napaka=None)
+    beri = sporocilo
+    beri[2] = sporocilo[2].replace("!;",",")
+    return template("message_reply.html", uporabnik=uporabnik,sporocilo=beri,napaka=None)
 
 @post('/user/<username>/reply/<sporocilo>')
 @cookie_required
@@ -236,6 +239,7 @@ def message_reply(username,sporocilo):
         return template("napaka.html")
     sporocilo = seznam_iz_str(sporocilo)   
     msg = request.forms.get("msg")
+    msg = msg.replace(",","!;") 
     if msg == "":
         return template("message_reply.html",uporabnik=uporabnik,sporocilo=sporocilo,napaka="Sporočilo mora imeti vsebino!")
     msg = '{'+'['+uporabnik.uporabnisko_ime+','+sporocilo[1]+','+msg+','+'False'+']'+'}'
@@ -273,19 +277,40 @@ def search(item):
 @cookie_required
 def uredi_profil(username):
     uporabnik = authS.dobi_uporabnika(username) 
-    return template("uredi_profil.html", uporabnik=uporabnik)
+    return template("uredi_profil.html", uporabnik=uporabnik,napaka=None)
     
 @post('/user/<username>/edit')
 @cookie_required
 def uredi_profil_post(username):
     uporabnik = authS.dobi_uporabnika(username)
-    oglasi = authS.dobi_oglase_uporabnika(uporabnik)
     up_ime = request.forms.get('up_ime')
     geslo = request.forms.get('geslo')
     telefon = request.forms.get('telefon')
-    email = request.forms.get('email')
+    email = request.forms.get('email')    
+    novo_geslo = request.forms.get('novo_geslo')
+    kraj = request.forms.get('kraj')
+    kred = uporabnik.kredibilnost
+    sporocila = uporabnik.sporocila
+    if up_ime=='':
+        return template("uredi_profil.html", uporabnik=uporabnik,napaka="Uporabniško ime mora vsebovati vsaj en znak!")
+    if authS.obstaja_uporabnik(up_ime) and up_ime != uporabnik.uporabnisko_ime:
+        return template("uredi_profil.html", uporabnik=uporabnik,napaka="Uporabnik s tem imenom že obstaja!")
+    if not authS.prijavi_uporabnika(uporabnik.uporabnisko_ime,geslo):
+        return template("uredi_profil.html", uporabnik=uporabnik,napaka="Nepravilno geslo!")
+    if authS.preveri_telefon(telefon) and uporabnik.telefon != telefon:
+        print(authS.preveri_telefon(telefon))
+        return template("uredi_profil.html", uporabnik=uporabnik,napaka="Ta telefonska številka je že zasedena!")
+    if authS.preveri_email(email) and uporabnik.email != email:
+        return template("uredi_profil.html", uporabnik=uporabnik,napaka="Ta email je že zaseden!")
+    if novo_geslo == '':
+        novo_geslo = geslo
+
+    authS.posodobi_uporabnika(uporabnik.uporabnisko_ime,up_ime,novo_geslo,email,telefon,kraj,kred,sporocila)
+    uporabnik = authS.dobi_uporabnika(up_ime)
+    response.delete_cookie("uporabnik")
     
-    return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Podatki uspošno posodobljeni!")
+    return template('login.html', uporabnik=uporabnik,napaka="Podatki uspešno posodobljeni! Za potrditev je potrebna ponovna prijava.")
+    #return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Podatki uspošno posodobljeni!")
 
 @get('/search_cat')
 @cookie_required
@@ -309,8 +334,48 @@ def search_catf(cat):
     return template("search_catf.html", cat=None, oglasi=oglasi,uporabnik=uporabnik,napaka=None)
     
     
+@get('/user/<username>/edit/<ad>')
+@cookie_required
+def edit_ad(username,ad):
+    uporabnik = authS.dobi_uporabnika(username)
+    oglas = oglasS.dobi_oglas(ad)
+    kategorije = katS.vrni_vse_kategorije()
+    print(oglas)
+    return template("edit_ad.html", uporabnik=uporabnik, oglas=oglas,kategorije=kategorije,napaka=None)
 
-
+@post('/user/<username>/edit/<ad>')
+@cookie_required
+def edit_ad(username, ad):
+    uporabnik = authS.dobi_uporabnika(username)
+    oglas = oglasS.dobi_oglas(ad)
+    naslov = request.forms.get('naslov')
+    opis = request.forms.get('opis')
+    cena = request.forms.get('cena')
+    kategorija = request.forms.get('kategorija')
+    slika = request.files['slika']
+    print("slika object:")
+    print(slika)
+    if naslov == "":
+        kategorije = katS.vrni_vse_kategorije()
+        return template("edit_ad.html", uporabnik=uporabnik, oglas=oglas,kategorije=kategorije, napaka="Oglas potrebuje naslov!")
+    elif opis == "":
+        kategorije = katS.vrni_vse_kategorije()
+        return template("edit_ad.html", uporabnik=uporabnik, oglas=oglas,kategorije=kategorije, napaka="Oglas potrebuje opis!")
+    elif cena == "":
+        kategorije = katS.vrni_vse_kategorije()
+        return template("edit_ad.html", uporabnik=uporabnik, oglas=oglas,kategorije=kategorije, napaka="Oglas potrebuje ceno!")
+    kategorija = request.forms.get('kategorija')
+    if slika.filename == 'empty':
+        oglasS.posodobi_oglas(ad, naslov, opis, cena, kategorija, None)
+    else:
+        filename = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", slika.filename)
+        slika.save(os.path.join(dirname,'presentation','static','images'),filename)
+        oglasS.posodobi_oglas(ad, naslov, opis, cena, kategorija, filename)
+        
+    oglas = oglasS.dobi_oglas(ad) 
+    return template("oglas.html",oglas=oglas,uporabnik=uporabnik,napaka="Oglas uspešno posodobljen!")
+    
+    
 ############################################## POMOZNO
 
 def razgradi(seznam):

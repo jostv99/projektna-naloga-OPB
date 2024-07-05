@@ -77,6 +77,21 @@ class Repo:
         oglasi = [Oglas.from_dict(t) for t in self.cur.fetchall()]
         return oglasi
     
+    def posodobi_oglas(self, ad, naslov, opis, cena, kategorija, filename):
+        if filename == None:
+            self.cur.execute("""
+                UPDATE oglasi SET
+                (kategorija, opis, naslov, cena) = (%s, %s, %s, %s)
+                WHERE id = %s                 
+            """,(kategorija,opis,naslov,cena,ad,))
+        else:
+            self.cur.execute("""
+                UPDATE oglasi SET
+                (kategorija, opis, naslov, cena, slika) = (%s, %s, %s, %s, %s)
+                WHERE id = %s                 
+            """,(kategorija,opis,naslov,cena,filename,ad,))
+        self.conn.commit()
+    
     ###################################################### UPORABNIKI
 
     def dobi_uporabnika(self,username):
@@ -129,7 +144,35 @@ class Repo:
         UPDATE uporabniki SET sporocila = %s WHERE uporabnisko_ime=%s
         """,(st,u.uporabnisko_ime,))
         self.conn.commit()
+        
+    def preveri_telefon(self, t):
+        self.cur.execute("""
+            SELECT EXISTS (SELECT 1 FROM uporabniki WHERE telefon=%s)                
+        """,(t,))
+        c = self.cur.fetchone()
+        return c[0]
+        
+    def preveri_email(self, e):
+        self.cur.execute("""
+            SELECT EXISTS (SELECT 1 FROM uporabniki WHERE email=%s)                
+        """,(e,))
+        c = self.cur.fetchone()
+        return c[0]
     
+    def posodobi_uporabnika(self, uporabnisko_ime, novo_uporabnisko_ime, novo_geslo, email, telefon, kraj_bivanja, kredibilnost, sporocila):
+        st = str(sporocila)
+        st = "{" + st[1:-1] + "}"
+        st = st.replace('"\'',"")
+        st = st.replace('\'"','')
+        st = st.replace("'","")
+        sporocila = st
+        self.cur.execute("""
+            UPDATE uporabniki SET 
+            (uporabnisko_ime, geslo, email, kredibilnost, telefon, kraj_bivanja, sporocila) = (%s, %s, %s, %s, %s, %s, %s)
+            WHERE uporabnisko_ime = %s         
+        """,(novo_uporabnisko_ime,novo_geslo,email,kredibilnost,telefon,kraj_bivanja,sporocila,uporabnisko_ime))
+        self.conn.commit()
+        
     ###################################################### KATEGORIJE
     
     def vrni_opis(self,id):

@@ -3,7 +3,7 @@
 <div>
     <div class="form-container">
         <h3>Posodobite svoje podatke:</h3>
-        <p>V polja vpišite podatke, ki jih želite spremeniti</p>
+        <p>V polja vpišite podatke, ki jih želite spremeniti. Za spremembo podatkov je potrebno vpisati geslo!</p>
         %url_posodobi = url('uredi_profil_post', username=uporabnik.uporabnisko_ime)
         <form action="{{url_posodobi}}" method="POST" class="ad-form" enctype="multipart/form-data">
             <div class="form-group">
@@ -13,7 +13,12 @@
 
             <div class="form-group">
                 <label for="opis">Geslo:</label>
-                <input type="password" class="form-control" name="geslo" placeholder="Vpišite novo geslo">
+                <input type="password" class="form-control" name="geslo" placeholder="Vpišite svoje geslo">
+            </div>
+
+            <div class="form-group">
+                <label for="opis">Novo geslo:</label>
+                <input type="password" class="form-control" name="novo_geslo" placeholder="V to polje vpišite geslo, če ga želite spremeniti">
             </div>
             
             <div class="form-group">
@@ -26,6 +31,11 @@
                 <input type="tel" class="form-control" name="telefon" value="{{uporabnik.telefon}}">
             </div>
 
+            <div class="form-group">
+                <label for="kategorija">Kraj bivanja:</label>
+                <input type="tel" class="form-control" name="kraj" value="{{uporabnik.kraj_bivanja}}">
+            </div>
+
             <button type="submit" class="btn btn-primary">Posodobi</button>
         </form>
 </div>
@@ -33,5 +43,7 @@
 <a href="{{url_sporocila}}" class="btn btn-primary">Nazaj na profil</a>
 
 
-
+%if napaka:
+<p class="opozorilo">{{napaka}}</p>
+%end
 

@@ -4,40 +4,47 @@
 <body>
     %rebase('osnovna.html')
 
-    %c_link = '/user/<username>/new_ad'
-    %user_ulr_ad = url(c_link, username=uporabnik.uporabnisko_ime)
+    %c_link = '/user/<username>/edit/<ad>'
+    %user_ulr_ad = url(c_link, username=uporabnik.uporabnisko_ime, ad=oglas.id)
     <div class="form-container">
         <form action="{{user_ulr_ad}}" method="POST" class="ad-form" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="naslov">Naslov oglasa:</label>
-                <input type="input" class="form-control" name="naslov" placeholder="Katero stvar prodajate danes?">
+                <input type="input" class="form-control" name="naslov" vlaue="{{oglas.naslov}}">
             </div>
 
             <div class="form-group">
                 <label for="opis">Opis oglasa:</label>
-                <input type="input" class="form-control" rows="3" name="opis" placeholder="Na kratko ali dolgo opišite kaj prodajate.">
+                <input type="input" class="form-control" rows="3" name="opis" value="{{oglas.opis}}">
             </div>
 
             <div class="form-group">
                 <label for="cena">Cena:</label>
-                <input type="number" class="form-control" min="0.00" step="0.01" name="cena">
+                <input type="number" class="form-control" min="0.00" step="0.01" name="cena" value="{{oglas.cena}}">
             </div>
+
 
             <div class="form-group">
                 <label for="kategorija">Izberite kategorijo:</label>
                 <select name="kategorija" id="kategorija" class="form-control">
+
                     %for kategorija in kategorije:
-                    <option value="{{kategorija.id}}">{{kategorija.opis}}</option>
+                        %if kategorija.id != oglas.kategorija:
+                            <option value="{{kategorija.id}}">{{kategorija.opis}}</option>
+                        %else:
+                            <option value="{{kategorija.id}}" selected>{{kategorija.opis}}</option>
+                        %end
                     %end
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="slika">Naloži sliko:</label>
-                <input type="file" id="slika" name="slika" accept="image/*" class="form-control-file">
+                <label for="slika">Spremeni sliko:</label>
+                <p>Če ne pripneš nove slike, bo pri oglasu objavljena stara.</p>
+                <input type="file" id="slika" name="slika" accept="image/*" class="form-control-file" value="oglas.slika">
             </div>
 
-            <button type="submit" class="btn btn-primary">Objavi oglas</button>
+            <button type="submit" class="btn btn-primary">Potrdi spremembe</button>
         </form>
 
         %if napaka:
