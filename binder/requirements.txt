@@ -1,7 +1,5 @@
 psycopg2
 dataclasses_json
-bottle
+functools
 bcrypt
 jupyter-server-proxy
-psycopg2.extensions
-psycopg2.extras
