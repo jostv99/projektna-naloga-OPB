@@ -1,9 +1,8 @@
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-import auth as auth
+import auth_public as auth
 
 from .models import Uporabnik, Kategorija, Oglas
-from typing import List
 
 class Repo:
     def __init__(self):

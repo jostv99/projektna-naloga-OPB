@@ -5,9 +5,10 @@ import os, psycopg2, psycopg2.extensions, psycopg2.extras
 from services.auth_service import AuthService
 from services.oglas_service import OglasService
 from services.kategorija_service import KategorijaService
-import auth as auth
+import auth as auths
+import auth_public as auth
 import re
-
+auth.skrivnost = auths.skrivnost
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
@@ -178,9 +179,12 @@ def remove_ad(username, id):
     oglasS.izbrisi_oglas(id)
     uporabnik = authS.dobi_uporabnika(username)
     oglasi = authS.dobi_oglase_uporabnika(uporabnik)
-    slika = request.files['slika']
-    filename = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", slika.filename)
-    os.remove(os.path.join(dirname,'presentation','static','images'),filename)
+    try:
+        slika = request.files['slika']
+        filename = re.sub(r"[/\\?%*:|\"<>\x7F\x00-\x1F]", "-", slika.filename)
+        os.remove(os.path.join(dirname,'presentation','static','images'),filename)
+    except:
+        return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno izbrisan!")  
     return template("lasten_profil.html",uporabnik=uporabnik,oglasi=oglasi,napaka="Oglas uspešno izbrisan!")  
 
 @get('/user/<username>/messages')

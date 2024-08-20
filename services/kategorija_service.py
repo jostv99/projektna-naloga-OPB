@@ -1,7 +1,5 @@
 from data.repository import Repo
 from data.models import *
-from typing import List
-import bcrypt
 
 class KategorijaService:
     repo : Repo
