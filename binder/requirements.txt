@@ -3,3 +3,5 @@ dataclasses_json
 bottle
 bcrypt
 jupyter-server-proxy
+psycopg2.extensions
+psycopg2.extras
