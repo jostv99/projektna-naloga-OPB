@@ -5,10 +5,9 @@ import os, psycopg2, psycopg2.extensions, psycopg2.extras
 from services.auth_service import AuthService
 from services.oglas_service import OglasService
 from services.kategorija_service import KategorijaService
-import auth as auths
 import auth_public as auth
 import re
-auth.skrivnost = auths.skrivnost
+auth.skrivnost = "skrivnost"
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
