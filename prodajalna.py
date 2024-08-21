@@ -7,7 +7,6 @@ from services.oglas_service import OglasService
 from services.kategorija_service import KategorijaService
 import auth_public as auth
 import re
-auth.skrivnost = "skrivnost"
 
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
