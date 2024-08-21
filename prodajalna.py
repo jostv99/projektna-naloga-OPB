@@ -1,5 +1,5 @@
 from functools import wraps
-from presentation.bottleext import get, post, run, request, template, redirect, static_file, url, response, template_user
+from presentation.bottleext import get, post, run, request, template, redirect, static_file, url, response
 
 import os, psycopg2, psycopg2.extensions, psycopg2.extras
 from services.auth_service import AuthService
