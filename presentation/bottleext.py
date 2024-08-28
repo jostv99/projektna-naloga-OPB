@@ -5,7 +5,7 @@ from bottle import TEMPLATE_PATH
 
 
 # Potrebujemo, če želimo, da imamo html datoteke v pod mapi
-TEMPLATE_PATH.append('./Presentation/views')
+TEMPLATE_PATH.append('./presentation/views')
 
 class Route(bottle.Route):
     """
